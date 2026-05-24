@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import pytest
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -8,7 +7,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 async def _create_system(client: AsyncClient, token: str, name: str = "Système Test") -> dict:
     response = await client.post(
         "/api/v1/systems",
-        json={"name": name, "description": "Système de test", "is_autonomous": False, "affects_persons": True},
+        json={
+            "name": name,
+            "description": "Système de test",
+            "is_autonomous": False,
+            "affects_persons": True,
+        },
         headers={"Authorization": f"Bearer {token}"},
     )
     assert response.status_code == 201
@@ -35,7 +39,9 @@ async def test_create_system(client: AsyncClient, reviewer_token: str) -> None:
     assert system["affects_persons"] is True
 
 
-async def test_create_system_readonly_forbidden(client: AsyncClient, db: AsyncSession, admin_token: str) -> None:
+async def test_create_system_readonly_forbidden(
+    client: AsyncClient, db: AsyncSession, admin_token: str
+) -> None:
     from app.core.security import create_access_token, hash_password
     from app.models.user import User, UserRole
 
@@ -47,7 +53,9 @@ async def test_create_system_readonly_forbidden(client: AsyncClient, db: AsyncSe
     )
     db.add(readonly)
     await db.flush()
-    token = create_access_token({"sub": str(readonly.id), "email": readonly.email, "role": "readonly"})
+    token = create_access_token(
+        {"sub": str(readonly.id), "email": readonly.email, "role": "readonly"}
+    )
 
     response = await client.post(
         "/api/v1/systems",
@@ -71,6 +79,7 @@ async def test_get_system(client: AsyncClient, reviewer_token: str) -> None:
 
 async def test_get_system_not_found(client: AsyncClient, admin_token: str) -> None:
     import uuid
+
     response = await client.get(
         f"/api/v1/systems/{uuid.uuid4()}",
         headers={"Authorization": f"Bearer {admin_token}"},
@@ -107,7 +116,9 @@ async def test_delete_system_as_admin(client: AsyncClient, admin_token: str) -> 
     assert get_response.status_code == 404
 
 
-async def test_delete_system_as_reviewer_forbidden(client: AsyncClient, reviewer_token: str) -> None:
+async def test_delete_system_as_reviewer_forbidden(
+    client: AsyncClient, reviewer_token: str
+) -> None:
     system = await _create_system(client, reviewer_token)
     response = await client.delete(
         f"/api/v1/systems/{system['id']}",
@@ -126,10 +137,14 @@ async def test_list_systems_with_search(client: AsyncClient, reviewer_token: str
     )
     assert response.status_code == 200
     data = response.json()
-    assert all("ChatBot" in item["name"] or "chatbot" in item["name"].lower() for item in data["items"])
+    assert all(
+        "ChatBot" in item["name"] or "chatbot" in item["name"].lower() for item in data["items"]
+    )
 
 
-async def test_create_system_audit_log_created(client: AsyncClient, reviewer_token: str, admin_token: str) -> None:
+async def test_create_system_audit_log_created(
+    client: AsyncClient, reviewer_token: str, admin_token: str
+) -> None:
     system = await _create_system(client, reviewer_token)
 
     audit_response = await client.get(

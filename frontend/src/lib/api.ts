@@ -1,6 +1,7 @@
 import type { ApiError } from "@/types/api";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api/v1";
+const API_BASE =
+  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api/v1";
 
 function getToken(): string | null {
   if (typeof window === "undefined") return null;
@@ -17,10 +18,7 @@ export class ApiRequestError extends Error {
   }
 }
 
-async function request<T>(
-  path: string,
-  options: RequestInit = {},
-): Promise<T> {
+async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const token = getToken();
   const headers: HeadersInit = {
     "Content-Type": "application/json",
@@ -53,14 +51,20 @@ export const api = {
     request<T>(path, { method: "PATCH", body: JSON.stringify(body) }),
   delete: (path: string) => request<void>(path, { method: "DELETE" }),
 
-  uploadFile: async <T>(path: string, file: File, extraParams?: Record<string, string>): Promise<T> => {
+  uploadFile: async <T>(
+    path: string,
+    file: File,
+    extraParams?: Record<string, string>,
+  ): Promise<T> => {
     const token = getToken();
     const formData = new FormData();
     formData.append("file", file);
 
     const url = new URL(`${API_BASE}${path}`);
     if (extraParams) {
-      Object.entries(extraParams).forEach(([k, v]) => url.searchParams.set(k, v));
+      Object.entries(extraParams).forEach(([k, v]) =>
+        url.searchParams.set(k, v),
+      );
     }
 
     const response = await fetch(url.toString(), {

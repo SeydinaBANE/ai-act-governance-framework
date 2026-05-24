@@ -6,7 +6,14 @@ import Link from "next/link";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import { PageShell } from "@/components/layout/PageShell";
-import { ArrowLeft, Sparkles, Save, Send, ChevronDown, ChevronUp } from "lucide-react";
+import {
+  ArrowLeft,
+  Sparkles,
+  Save,
+  Send,
+  ChevronDown,
+  ChevronUp,
+} from "lucide-react";
 
 interface ModelCard {
   id: string;
@@ -53,43 +60,106 @@ const SECTIONS = [
     id: "s1",
     title: "Informations générales",
     fields: [
-      { key: "model_name", label: "Nom du modèle *", type: "input", required: true },
-      { key: "model_type", label: "Type de modèle", type: "input", placeholder: "Classification, NLP, Vision..." },
-      { key: "architecture", label: "Architecture", type: "input", placeholder: "Transformer, CNN, BERT..." },
-      { key: "framework", label: "Framework", type: "input", placeholder: "PyTorch, TensorFlow, scikit-learn..." },
-      { key: "license", label: "Licence", type: "input", placeholder: "Apache 2.0, MIT, propriétaire..." },
+      {
+        key: "model_name",
+        label: "Nom du modèle *",
+        type: "input",
+        required: true,
+      },
+      {
+        key: "model_type",
+        label: "Type de modèle",
+        type: "input",
+        placeholder: "Classification, NLP, Vision...",
+      },
+      {
+        key: "architecture",
+        label: "Architecture",
+        type: "input",
+        placeholder: "Transformer, CNN, BERT...",
+      },
+      {
+        key: "framework",
+        label: "Framework",
+        type: "input",
+        placeholder: "PyTorch, TensorFlow, scikit-learn...",
+      },
+      {
+        key: "license",
+        label: "Licence",
+        type: "input",
+        placeholder: "Apache 2.0, MIT, propriétaire...",
+      },
     ],
   },
   {
     id: "s2",
     title: "Données et entraînement",
     fields: [
-      { key: "preprocessing_steps", label: "Étapes de prétraitement", type: "textarea" },
-      { key: "known_biases", label: "Biais connus", type: "textarea", aiGenerated: true },
+      {
+        key: "preprocessing_steps",
+        label: "Étapes de prétraitement",
+        type: "textarea",
+      },
+      {
+        key: "known_biases",
+        label: "Biais connus",
+        type: "textarea",
+        aiGenerated: true,
+      },
     ],
   },
   {
     id: "s3",
     title: "Performance et évaluation",
     fields: [
-      { key: "evaluation_procedure", label: "Procédure d'évaluation", type: "textarea" },
+      {
+        key: "evaluation_procedure",
+        label: "Procédure d'évaluation",
+        type: "textarea",
+      },
     ],
   },
   {
     id: "s4",
     title: "Limitations et éthique",
     fields: [
-      { key: "limitations", label: "Limitations connues", type: "textarea", aiGenerated: true },
-      { key: "out_of_scope_uses", label: "Usages hors périmètre", type: "textarea", aiGenerated: true },
-      { key: "ethical_considerations", label: "Considérations éthiques", type: "textarea", aiGenerated: true },
+      {
+        key: "limitations",
+        label: "Limitations connues",
+        type: "textarea",
+        aiGenerated: true,
+      },
+      {
+        key: "out_of_scope_uses",
+        label: "Usages hors périmètre",
+        type: "textarea",
+        aiGenerated: true,
+      },
+      {
+        key: "ethical_considerations",
+        label: "Considérations éthiques",
+        type: "textarea",
+        aiGenerated: true,
+      },
     ],
   },
   {
     id: "s5",
     title: "Conformité AI Act",
     fields: [
-      { key: "conformity_measures", label: "Mesures de conformité", type: "textarea", aiGenerated: true },
-      { key: "human_oversight", label: "Supervision humaine", type: "textarea", aiGenerated: true },
+      {
+        key: "conformity_measures",
+        label: "Mesures de conformité",
+        type: "textarea",
+        aiGenerated: true,
+      },
+      {
+        key: "human_oversight",
+        label: "Supervision humaine",
+        type: "textarea",
+        aiGenerated: true,
+      },
     ],
   },
   {
@@ -105,18 +175,32 @@ const SECTIONS = [
 export default function ModelCardPage() {
   const { id } = useParams<{ id: string }>();
   const queryClient = useQueryClient();
-  const [openSections, setOpenSections] = useState<Set<string>>(new Set(["s1"]));
+  const [openSections, setOpenSections] = useState<Set<string>>(
+    new Set(["s1"]),
+  );
   const [isGenerating, setIsGenerating] = useState(false);
   const [form, setForm] = useState<FormState>({
-    model_name: "", model_type: "", architecture: "", framework: "", license: "",
-    preprocessing_steps: "", known_biases: "", evaluation_procedure: "",
-    limitations: "", out_of_scope_uses: "", ethical_considerations: "",
-    conformity_measures: "", human_oversight: "", developer_contact: "", dpo_contact: "",
+    model_name: "",
+    model_type: "",
+    architecture: "",
+    framework: "",
+    license: "",
+    preprocessing_steps: "",
+    known_biases: "",
+    evaluation_procedure: "",
+    limitations: "",
+    out_of_scope_uses: "",
+    ethical_considerations: "",
+    conformity_measures: "",
+    human_oversight: "",
+    developer_contact: "",
+    dpo_contact: "",
   });
 
   const { data: cards } = useQuery<{ items: ModelCard[]; total: number }>({
     queryKey: ["model-cards", id],
-    queryFn: () => api.get<{ items: ModelCard[]; total: number }>(`/model-cards/${id}`),
+    queryFn: () =>
+      api.get<{ items: ModelCard[]; total: number }>(`/model-cards/${id}`),
   });
 
   useEffect(() => {
@@ -168,19 +252,32 @@ export default function ModelCardPage() {
       }
       return api.post<ModelCard>(`/model-cards/${id}`, payload);
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["model-cards", id] }),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["model-cards", id] }),
   });
 
   const publishMutation = useMutation({
     mutationFn: () => api.post(`/model-cards/${existingCard!.id}/publish`, {}),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["model-cards", id] }),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["model-cards", id] }),
   });
 
   async function handleGenerate() {
     setIsGenerating(true);
     try {
-      const sections = await api.post<Record<string, string>>(`/model-cards/${id}/generate`, {});
-      setForm(prev => ({ ...prev, ...Object.fromEntries(Object.entries(sections).map(([k, v]) => [k, v || prev[k as keyof FormState]])) }));
+      const sections = await api.post<Record<string, string>>(
+        `/model-cards/${id}/generate`,
+        {},
+      );
+      setForm((prev) => ({
+        ...prev,
+        ...Object.fromEntries(
+          Object.entries(sections).map(([k, v]) => [
+            k,
+            v || prev[k as keyof FormState],
+          ]),
+        ),
+      }));
       setOpenSections(new Set(["s1", "s2", "s3", "s4", "s5", "s6"]));
     } catch {
       // silently ignore — error shown via API
@@ -190,7 +287,7 @@ export default function ModelCardPage() {
   }
 
   function toggleSection(sectionId: string) {
-    setOpenSections(prev => {
+    setOpenSections((prev) => {
       const next = new Set(prev);
       next.has(sectionId) ? next.delete(sectionId) : next.add(sectionId);
       return next;
@@ -198,7 +295,7 @@ export default function ModelCardPage() {
   }
 
   function updateField(key: string, value: string) {
-    setForm(prev => ({ ...prev, [key]: value }));
+    setForm((prev) => ({ ...prev, [key]: value }));
   }
 
   return (
@@ -206,13 +303,18 @@ export default function ModelCardPage() {
       <div className="max-w-3xl">
         <div className="mb-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Link href={`/systems/${id}`} className="text-gray-400 hover:text-gray-600">
+            <Link
+              href={`/systems/${id}`}
+              className="text-gray-400 hover:text-gray-600"
+            >
               <ArrowLeft className="h-5 w-5" />
             </Link>
             <div>
               <h1 className="text-2xl font-bold text-gray-900">Model Card</h1>
               <p className="text-sm text-gray-500 mt-0.5">
-                {existingCard ? `Statut : ${existingCard.status}` : "Nouvelle model card"}
+                {existingCard
+                  ? `Statut : ${existingCard.status}`
+                  : "Nouvelle model card"}
               </p>
             </div>
           </div>
@@ -261,8 +363,14 @@ export default function ModelCardPage() {
                   onClick={() => toggleSection(section.id)}
                   className="flex w-full items-center justify-between px-5 py-4 text-left"
                 >
-                  <span className="text-sm font-semibold text-gray-900">{section.title}</span>
-                  {isOpen ? <ChevronUp className="h-4 w-4 text-gray-400" /> : <ChevronDown className="h-4 w-4 text-gray-400" />}
+                  <span className="text-sm font-semibold text-gray-900">
+                    {section.title}
+                  </span>
+                  {isOpen ? (
+                    <ChevronUp className="h-4 w-4 text-gray-400" />
+                  ) : (
+                    <ChevronDown className="h-4 w-4 text-gray-400" />
+                  )}
                 </button>
 
                 {isOpen && (
@@ -270,25 +378,41 @@ export default function ModelCardPage() {
                     {section.fields.map((field) => (
                       <div key={field.key}>
                         <div className="flex items-center gap-2 mb-1">
-                          <label className="text-sm font-medium text-gray-700">{field.label}</label>
+                          <label className="text-sm font-medium text-gray-700">
+                            {field.label}
+                          </label>
                           {"aiGenerated" in field && field.aiGenerated && (
-                            <span className="rounded-full bg-purple-50 px-1.5 py-0.5 text-xs text-purple-600 border border-purple-200">IA</span>
+                            <span className="rounded-full bg-purple-50 px-1.5 py-0.5 text-xs text-purple-600 border border-purple-200">
+                              IA
+                            </span>
                           )}
                         </div>
                         {field.type === "textarea" ? (
                           <textarea
                             value={form[field.key as keyof FormState]}
-                            onChange={(e) => updateField(field.key, e.target.value)}
+                            onChange={(e) =>
+                              updateField(field.key, e.target.value)
+                            }
                             rows={3}
-                            placeholder={"placeholder" in field ? field.placeholder as string : ""}
+                            placeholder={
+                              "placeholder" in field
+                                ? (field.placeholder as string)
+                                : ""
+                            }
                             className="input w-full resize-none text-sm"
                           />
                         ) : (
                           <input
                             type="text"
                             value={form[field.key as keyof FormState]}
-                            onChange={(e) => updateField(field.key, e.target.value)}
-                            placeholder={"placeholder" in field ? field.placeholder as string : ""}
+                            onChange={(e) =>
+                              updateField(field.key, e.target.value)
+                            }
+                            placeholder={
+                              "placeholder" in field
+                                ? (field.placeholder as string)
+                                : ""
+                            }
                             className="input w-full text-sm"
                           />
                         )}
@@ -304,8 +428,12 @@ export default function ModelCardPage() {
         {/* Export PDF */}
         <div className="mt-6 card p-4 flex items-center justify-between">
           <div>
-            <p className="text-sm font-medium text-gray-900">Rapport de conformité PDF</p>
-            <p className="text-xs text-gray-500 mt-0.5">Inclut le risk assessment, la model card et l&apos;audit trail</p>
+            <p className="text-sm font-medium text-gray-900">
+              Rapport de conformité PDF
+            </p>
+            <p className="text-xs text-gray-500 mt-0.5">
+              Inclut le risk assessment, la model card et l&apos;audit trail
+            </p>
           </div>
           <a
             href={`${process.env.NEXT_PUBLIC_API_URL}/exports/compliance-report/${id}`}
@@ -316,11 +444,14 @@ export default function ModelCardPage() {
               // Add auth token to download
               e.preventDefault();
               const token = localStorage.getItem("access_token");
-              fetch(`${process.env.NEXT_PUBLIC_API_URL}/exports/compliance-report/${id}`, {
-                headers: { Authorization: `Bearer ${token}` },
-              })
-                .then(r => r.blob())
-                .then(blob => {
+              fetch(
+                `${process.env.NEXT_PUBLIC_API_URL}/exports/compliance-report/${id}`,
+                {
+                  headers: { Authorization: `Bearer ${token}` },
+                },
+              )
+                .then((r) => r.blob())
+                .then((blob) => {
                   const url = URL.createObjectURL(blob);
                   const a = document.createElement("a");
                   a.href = url;

@@ -46,7 +46,10 @@ export default function SystemsPage() {
   const { data, isLoading } = useQuery({
     queryKey: ["systems", page, search, statusFilter],
     queryFn: () => {
-      const params = new URLSearchParams({ page: String(page), per_page: "20" });
+      const params = new URLSearchParams({
+        page: String(page),
+        per_page: "20",
+      });
       if (search) params.set("search", search);
       if (statusFilter) params.set("status", statusFilter);
       return api.get<AISystemList>(`/systems?${params}`);
@@ -79,18 +82,26 @@ export default function SystemsPage() {
             type="text"
             placeholder="Rechercher..."
             value={search}
-            onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setPage(1);
+            }}
             className="w-full rounded-md border border-gray-300 pl-9 pr-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
           />
         </div>
         <select
           value={statusFilter}
-          onChange={(e) => { setStatusFilter(e.target.value as SystemStatus | ""); setPage(1); }}
+          onChange={(e) => {
+            setStatusFilter(e.target.value as SystemStatus | "");
+            setPage(1);
+          }}
           className="rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
         >
           <option value="">Tous les statuts</option>
           {Object.entries(STATUS_LABELS).map(([v, l]) => (
-            <option key={v} value={v}>{l}</option>
+            <option key={v} value={v}>
+              {l}
+            </option>
           ))}
         </select>
       </div>
@@ -105,7 +116,10 @@ export default function SystemsPage() {
           <div className="flex flex-col items-center justify-center h-48 text-gray-400">
             <Cpu className="h-10 w-10 mb-2" />
             <p className="text-sm">Aucun système trouvé</p>
-            <Link href="/systems/new" className="mt-2 text-sm text-blue-600 hover:underline">
+            <Link
+              href="/systems/new"
+              className="mt-2 text-sm text-blue-600 hover:underline"
+            >
               Ajouter un premier système
             </Link>
           </div>
@@ -113,40 +127,63 @@ export default function SystemsPage() {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nom</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Équipe</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Risque AI Act</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Version</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Nom
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Équipe
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Statut
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Risque AI Act
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Version
+                </th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {data.items.map((system) => (
                 <tr key={system.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4">
-                    <Link href={`/systems/${system.id}`} className="text-sm font-medium text-blue-600 hover:underline">
+                    <Link
+                      href={`/systems/${system.id}`}
+                      className="text-sm font-medium text-blue-600 hover:underline"
+                    >
                       {system.name}
                     </Link>
                     {system.description && (
-                      <p className="text-xs text-gray-400 mt-0.5 line-clamp-1">{system.description}</p>
+                      <p className="text-xs text-gray-400 mt-0.5 line-clamp-1">
+                        {system.description}
+                      </p>
                     )}
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-600">{system.owner_team ?? "—"}</td>
+                  <td className="px-6 py-4 text-sm text-gray-600">
+                    {system.owner_team ?? "—"}
+                  </td>
                   <td className="px-6 py-4">
-                    <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[system.status]}`}>
+                    <span
+                      className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[system.status]}`}
+                    >
                       {STATUS_LABELS[system.status]}
                     </span>
                   </td>
                   <td className="px-6 py-4">
                     {system.current_risk_category ? (
-                      <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${RISK_COLORS[system.current_risk_category]}`}>
+                      <span
+                        className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${RISK_COLORS[system.current_risk_category]}`}
+                      >
                         {RISK_LABELS[system.current_risk_category]}
                       </span>
                     ) : (
                       <span className="text-xs text-gray-400">Non évalué</span>
                     )}
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-500">{system.version ?? "—"}</td>
+                  <td className="px-6 py-4 text-sm text-gray-500">
+                    {system.version ?? "—"}
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -161,7 +198,7 @@ export default function SystemsPage() {
           <div className="flex gap-2">
             <button
               disabled={page === 1}
-              onClick={() => setPage(p => p - 1)}
+              onClick={() => setPage((p) => p - 1)}
               className="rounded border border-gray-300 px-3 py-1 disabled:opacity-40 hover:bg-gray-50"
             >
               Précédent
@@ -169,7 +206,7 @@ export default function SystemsPage() {
             <span className="px-2 py-1">Page {page}</span>
             <button
               disabled={page * data.per_page >= data.total}
-              onClick={() => setPage(p => p + 1)}
+              onClick={() => setPage((p) => p + 1)}
               className="rounded border border-gray-300 px-3 py-1 disabled:opacity-40 hover:bg-gray-50"
             >
               Suivant

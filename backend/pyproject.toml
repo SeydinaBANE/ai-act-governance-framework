@@ -27,8 +27,10 @@ ignore = [
 ]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/**" = ["S", "ANN"]
-"app/main.py" = ["ANN"]  # middleware ASGI : typage call_next est infaisable proprement
+"tests/**" = ["S", "ANN", "E501"]
+"app/main.py" = ["ANN"]
+"alembic/**" = ["E501", "ANN", "S"]
+"scripts/**" = ["E501", "S", "ANN", "T201"]
 
 [tool.ruff.format]
 quote-style = "double"

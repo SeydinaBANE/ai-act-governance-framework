@@ -1,11 +1,8 @@
 from __future__ import annotations
 
 import uuid
-import pytest
-from httpx import AsyncClient
-from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models.ai_system import AISystem
+from httpx import AsyncClient
 
 
 async def test_get_questionnaire(client: AsyncClient, reviewer_user, reviewer_token) -> None:
@@ -71,7 +68,9 @@ async def test_assess_high_risk(client: AsyncClient, reviewer_user, reviewer_tok
     assert len(data["required_actions"]) > 0
 
 
-async def test_assess_nonexistent_system(client: AsyncClient, reviewer_user, reviewer_token) -> None:
+async def test_assess_nonexistent_system(
+    client: AsyncClient, reviewer_user, reviewer_token
+) -> None:
     fake_id = str(uuid.uuid4())
     response = await client.post(
         f"/api/v1/risk/assess/{fake_id}",

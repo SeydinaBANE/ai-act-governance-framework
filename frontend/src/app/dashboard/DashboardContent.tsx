@@ -4,12 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import { RiskDistributionChart } from "@/components/dashboard/RiskDistributionChart";
 import type { DashboardSummary } from "@/types/api";
-import {
-  CheckCircle,
-  AlertTriangle,
-  XCircle,
-  HelpCircle,
-} from "lucide-react";
+import { CheckCircle, AlertTriangle, XCircle, HelpCircle } from "lucide-react";
 
 export function DashboardContent() {
   const { data: summary, isLoading } = useQuery({
@@ -20,7 +15,9 @@ export function DashboardContent() {
   const { data: actionsData } = useQuery({
     queryKey: ["actions-required"],
     queryFn: () =>
-      api.get<{ actions: unknown[]; total: number }>("/dashboard/actions-required"),
+      api.get<{ actions: unknown[]; total: number }>(
+        "/dashboard/actions-required",
+      ),
   });
 
   if (isLoading) {
@@ -110,28 +107,32 @@ export function DashboardContent() {
           </h2>
           {actionsData && actionsData.actions.length > 0 ? (
             <div className="space-y-3 max-h-48 overflow-y-auto">
-              {(actionsData.actions as Array<{
-                article: string;
-                obligation: string;
-                deadline: string;
-              }>).slice(0, 8).map((action, i) => (
-                <div
-                  key={i}
-                  className="flex items-start gap-3 p-3 rounded-md bg-orange-50 border border-orange-100"
-                >
-                  <span className="shrink-0 rounded bg-orange-200 px-1.5 py-0.5 text-xs font-mono font-semibold text-orange-800">
-                    {action.article}
-                  </span>
-                  <div className="min-w-0">
-                    <p className="text-xs text-gray-700 line-clamp-2">
-                      {action.obligation}
-                    </p>
-                    <p className="mt-0.5 text-xs text-gray-400">
-                      Échéance : {action.deadline}
-                    </p>
+              {(
+                actionsData.actions as Array<{
+                  article: string;
+                  obligation: string;
+                  deadline: string;
+                }>
+              )
+                .slice(0, 8)
+                .map((action, i) => (
+                  <div
+                    key={i}
+                    className="flex items-start gap-3 p-3 rounded-md bg-orange-50 border border-orange-100"
+                  >
+                    <span className="shrink-0 rounded bg-orange-200 px-1.5 py-0.5 text-xs font-mono font-semibold text-orange-800">
+                      {action.article}
+                    </span>
+                    <div className="min-w-0">
+                      <p className="text-xs text-gray-700 line-clamp-2">
+                        {action.obligation}
+                      </p>
+                      <p className="mt-0.5 text-xs text-gray-400">
+                        Échéance : {action.deadline}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
             </div>
           ) : (
             <div className="flex items-center justify-center h-32 text-sm text-gray-400">

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Seed script — données de démonstration pour l'environnement de dev."""
+
 from __future__ import annotations
 
 import asyncio
@@ -9,13 +10,12 @@ from pathlib import Path
 # Ajouter le répertoire backend au PYTHONPATH
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
-
 from app.config import settings
 from app.core.security import hash_password
 from app.database import Base
 from app.models.ai_system import AISystem, RiskCategory, SystemStatus
 from app.models.user import User, UserRole
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 
 async def seed() -> None:
@@ -104,7 +104,7 @@ async def seed() -> None:
     print("  admin@aiact-governance.fr / Admin@123456 [admin]")
     print("  reviewer@aiact-governance.fr / Review@123456 [reviewer]")
     print("  viewer@aiact-governance.fr / View@123456 [readonly]")
-    print(f"\nSystèmes créés : 3 (RAG, Scoring CV, Chatbot)")
+    print("\nSystèmes créés : 3 (RAG, Scoring CV, Chatbot)")
     print("\nAccès : http://localhost:8000/docs")
 
 

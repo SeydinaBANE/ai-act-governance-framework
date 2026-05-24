@@ -64,12 +64,12 @@ jobs:
 
     env:
       DATABASE_URL: postgresql+asyncpg://aiact:aiact_dev_secret_2026@localhost:5432/aiact_governance
-      SECRET_KEY: ci-secret-key-not-used-in-prod-32chars
+      SECRET_KEY: ci-secret-key-not-used-in-prod-32chars  # pragma: allowlist secret
       ALGORITHM: HS256
       ACCESS_TOKEN_EXPIRE_MINUTES: 60
       ENVIRONMENT: development
       LOG_LEVEL: WARNING
-      OPENROUTER_API_KEY: sk-dummy
+      OPENROUTER_API_KEY: sk-dummy  # pragma: allowlist secret
       OPENROUTER_MODEL: anthropic/claude-haiku-4.5
       OPENROUTER_BASE_URL: https://openrouter.ai/api/v1
       PRESIDIO_ANALYZER_URL: http://localhost:3000
@@ -96,9 +96,10 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Create test database
+        env:
+          PGPASSWORD: aiact_dev_secret_2026  # pragma: allowlist secret
         run: |
-          PGPASSWORD=aiact_dev_secret_2026 psql \
-            -h localhost -U aiact -d aiact_governance \
+          psql -h localhost -U aiact -d aiact_governance \
             -c "CREATE DATABASE aiact_governance_test;" || true
 
       - name: Apply migrations

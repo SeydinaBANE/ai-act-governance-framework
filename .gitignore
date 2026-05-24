@@ -57,4 +57,4 @@ Thumbs.db
 *.swo
 
 # ---- detect-secrets ----
-.secrets.baseline
+# .secrets.baseline is tracked in git (shared baseline for all devs)

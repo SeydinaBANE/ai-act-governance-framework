@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import pytest
-
 from app.models.ai_system import RiskCategory
 from app.services.risk_scorer import assess
 
@@ -103,5 +101,6 @@ def test_justification_not_empty() -> None:
 
 def test_valid_until_future_date_for_non_prohibited() -> None:
     from datetime import date
+
     result = assess({})
     assert result.valid_until > date.today()

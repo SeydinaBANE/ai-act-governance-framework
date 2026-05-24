@@ -156,7 +156,7 @@ async def list_scans(
     result = await db.execute(
         q.offset((page - 1) * per_page).limit(per_page).order_by(PIIScan.created_at.desc())
     )
-    return PIIScanList(items=list(result.scalars().all()), total=total)
+    return PIIScanList(items=list(result.scalars().all()), total=total)  # type: ignore[arg-type]
 
 
 @router.get("/scans/{scan_id}", response_model=PIIScanOut)

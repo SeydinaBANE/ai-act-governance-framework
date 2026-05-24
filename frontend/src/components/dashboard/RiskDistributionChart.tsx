@@ -50,9 +50,7 @@ export function RiskDistributionChart({
             <Cell key={index} fill={entry.color} />
           ))}
         </Pie>
-        <Tooltip
-          formatter={(value: number, name: string) => [value, name]}
-        />
+        <Tooltip formatter={(value: number, name: string) => [value, name]} />
         <Legend />
       </PieChart>
     </ResponsiveContainer>

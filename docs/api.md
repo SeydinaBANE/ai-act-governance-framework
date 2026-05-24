@@ -1,6 +1,6 @@
 # Référence API
 
-Base URL : `http://localhost:8000/api/v1`  
+Base URL : `http://localhost:8000/api/v1`
 Documentation interactive : http://localhost:8000/docs
 
 Tous les endpoints (sauf `/auth/login` et `/health`) requièrent un header :
@@ -15,7 +15,7 @@ Authorization: Bearer <access_token>
 ### `POST /auth/login`
 ```json
 // Request
-{ "email": "admin@aiact-governance.fr", "password": "admin1234" }
+{ "email": "admin@aiact-governance.fr", "password": "admin1234" } // pragma: allowlist secret
 
 // Response 200
 { "access_token": "eyJ...", "token_type": "bearer", "expires_in": 28800 }
@@ -27,7 +27,7 @@ Retourne l'utilisateur courant.
 ### `POST /auth/users` *(admin)*
 Créer un utilisateur.
 ```json
-{ "email": "user@example.com", "full_name": "Prénom Nom", "password": "Secure123!", "role": "reviewer" }
+{ "email": "user@example.com", "full_name": "Prénom Nom", "password": "Secure123!", "role": "reviewer" } // pragma: allowlist secret
 ```
 
 ---
