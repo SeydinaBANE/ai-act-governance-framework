@@ -1,5 +1,14 @@
 # AI Act Governance Framework
 
+[![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![Next.js](https://img.shields.io/badge/Next.js-15-000000?logo=nextdotjs&logoColor=white)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.7-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)](https://docs.docker.com/compose/)
+[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+[![AI Act](https://img.shields.io/badge/EU%20AI%20Act-2024%2F1689-003399?logo=europeanunion&logoColor=white)](https://eur-lex.europa.eu/legal-content/FR/TXT/?uri=CELEX:32024R1689)
+
 Framework de gouvernance IA conforme à l'AI Act européen. Permet aux équipes DSI/DPO de classifier leurs systèmes IA par niveau de risque, générer des model cards EU, tracer les décisions et scanner les données personnelles.
 
 ## Fonctionnalités
