@@ -6,7 +6,6 @@ from typing import Annotated
 import structlog
 from fastapi import APIRouter, HTTPException, Query, status
 from sqlalchemy import func, select
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.dependencies import CurrentUser, ReviewerOrAbove
 from app.database import DbSession

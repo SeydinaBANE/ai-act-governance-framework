@@ -7,14 +7,12 @@ from typing import Annotated
 import structlog
 from fastapi import APIRouter, HTTPException, Query, status
 from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.dependencies import AdminUser, CurrentUser, ReviewerOrAbove
+from app.core.dependencies import AdminUser, ReviewerOrAbove
 from app.database import DbSession
 from app.models.audit_log import AuditLog
 from app.models.user import User
-from app.schemas.audit_log import AuditLogList, AuditLogOut, HashVerifyResult
-from app.services.audit_logger import verify_hash
+from app.schemas.audit_log import AuditLogList, HashVerifyResult
 
 log = structlog.get_logger(__name__)
 
