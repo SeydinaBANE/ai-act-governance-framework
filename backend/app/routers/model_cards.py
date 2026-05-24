@@ -36,7 +36,7 @@ async def list_model_cards(
         .order_by(ModelCard.created_at.desc())
     )
     items = list(result.scalars().all())
-    return ModelCardList(items=items, total=len(items))  # type: ignore[arg-type]
+    return ModelCardList(items=[ModelCardOut.model_validate(i) for i in items], total=len(items))
 
 
 @router.post("/{system_id}", response_model=ModelCardOut, status_code=status.HTTP_201_CREATED)

@@ -100,4 +100,6 @@ async def list_assessments(
         .order_by(RiskAssessment.created_at.desc())
     )
     items = list(result.scalars().all())
-    return RiskAssessmentList(items=items, total=len(items))  # type: ignore[arg-type]
+    return RiskAssessmentList(
+        items=[RiskAssessmentOut.model_validate(i) for i in items], total=len(items)
+    )

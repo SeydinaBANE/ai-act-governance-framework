@@ -92,7 +92,7 @@ async def add_request_id(request: Request, call_next):  # type: ignore[no-untype
 
 
 # Exception handlers
-app.add_exception_handler(HTTPException, http_exception_handler)  # type: ignore[arg-type]
+app.add_exception_handler(HTTPException, http_exception_handler)
 
 
 @app.get("/health", tags=["Health"])

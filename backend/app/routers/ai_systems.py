@@ -44,7 +44,12 @@ async def list_systems(
     result = await db.execute(q)
     items = list(result.scalars().all())
 
-    return AISystemList(items=items, total=total, page=page, per_page=per_page)  # type: ignore[arg-type]
+    return AISystemList(
+        items=[AISystemOut.model_validate(i) for i in items],
+        total=total,
+        page=page,
+        per_page=per_page,
+    )
 
 
 @router.post("", response_model=AISystemOut, status_code=status.HTTP_201_CREATED)

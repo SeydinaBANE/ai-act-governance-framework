@@ -12,7 +12,7 @@ from app.core.dependencies import AdminUser, ReviewerOrAbove
 from app.database import DbSession
 from app.models.audit_log import AuditLog
 from app.models.user import User
-from app.schemas.audit_log import AuditLogList, HashVerifyResult
+from app.schemas.audit_log import AuditLogList, AuditLogOut, HashVerifyResult
 
 log = structlog.get_logger(__name__)
 
@@ -51,7 +51,9 @@ async def list_audit_logs(
     result = await db.execute(
         q.offset((page - 1) * per_page).limit(per_page).order_by(AuditLog.created_at.desc())
     )
-    return AuditLogList(items=list(result.scalars().all()), total=total)  # type: ignore[arg-type]
+    return AuditLogList(
+        items=[AuditLogOut.model_validate(i) for i in result.scalars().all()], total=total
+    )
 
 
 @router.get("/{resource_type}/{resource_id}", response_model=AuditLogList)
@@ -75,7 +77,9 @@ async def get_resource_audit(
     result = await db.execute(
         q.offset((page - 1) * per_page).limit(per_page).order_by(AuditLog.created_at.desc())
     )
-    return AuditLogList(items=list(result.scalars().all()), total=total)  # type: ignore[arg-type]
+    return AuditLogList(
+        items=[AuditLogOut.model_validate(i) for i in result.scalars().all()], total=total
+    )
 
 
 @router.get("/entry/{log_id}/verify", response_model=HashVerifyResult)
