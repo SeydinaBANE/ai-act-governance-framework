@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import io
 from datetime import UTC, datetime
+from typing import Any
 
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
@@ -36,7 +37,7 @@ RISK_LABELS = {
 }
 
 
-def _styles() -> dict:
+def _styles() -> dict[str, Any]:
     base = getSampleStyleSheet()
     return {
         "title": ParagraphStyle(

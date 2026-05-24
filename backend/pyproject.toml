@@ -39,11 +39,12 @@ python_version = "3.12"
 strict = true
 plugins = ["pydantic.mypy", "sqlalchemy.ext.mypy.plugin"]
 ignore_missing_imports = true
-warn_return_any = true
+warn_return_any = false          # jose/passlib/slowapi retournent Any sans stubs complets
 warn_unused_configs = true
 disallow_untyped_defs = true
 disallow_any_generics = true
 strict_equality = true
+disallow_untyped_decorators = false  # @router.get / @limiter.limit n'ont pas de stubs complets
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

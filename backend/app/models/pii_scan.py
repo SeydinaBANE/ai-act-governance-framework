@@ -3,6 +3,7 @@ from __future__ import annotations
 import enum
 import uuid
 from datetime import UTC, datetime
+from typing import Any
 
 from sqlalchemy import DateTime, Enum, Float, ForeignKey, Integer, String
 from sqlalchemy.dialects.postgresql import JSONB, UUID
@@ -47,8 +48,8 @@ class PIIScan(Base):
     source_hash: Mapped[str | None] = mapped_column(String(64))
     total_items: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     pii_found: Mapped[bool] = mapped_column(default=False, nullable=False)
-    findings: Mapped[list[dict]] = mapped_column(JSONB, nullable=False, default=list)
-    entity_summary: Mapped[dict | None] = mapped_column(JSONB)
+    findings: Mapped[list[dict[str, Any]]] = mapped_column(JSONB, nullable=False, default=list)
+    entity_summary: Mapped[dict[str, Any] | None] = mapped_column(JSONB)
     confidence_threshold: Mapped[float] = mapped_column(Float, default=0.85, nullable=False)
     status: Mapped[ScanStatus] = mapped_column(
         Enum(ScanStatus), nullable=False, default=ScanStatus.COMPLETED

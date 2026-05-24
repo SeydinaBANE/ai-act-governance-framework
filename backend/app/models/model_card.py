@@ -3,6 +3,7 @@ from __future__ import annotations
 import enum
 import uuid
 from datetime import UTC, datetime
+from typing import Any
 
 from sqlalchemy import DateTime, Enum, ForeignKey, String, Text
 from sqlalchemy.dialects.postgresql import JSONB, UUID
@@ -34,12 +35,12 @@ class ModelCard(Base):
     license: Mapped[str | None] = mapped_column(String(100))
 
     # Section 2 — Données d'entraînement
-    training_datasets: Mapped[list[dict] | None] = mapped_column(JSONB)
+    training_datasets: Mapped[list[dict[str, Any]] | None] = mapped_column(JSONB)
     preprocessing_steps: Mapped[str | None] = mapped_column(Text)
     known_biases: Mapped[str | None] = mapped_column(Text)
 
     # Section 3 — Performance
-    metrics: Mapped[list[dict] | None] = mapped_column(JSONB)
+    metrics: Mapped[list[dict[str, Any]] | None] = mapped_column(JSONB)
     evaluation_procedure: Mapped[str | None] = mapped_column(Text)
 
     # Section 4 — Limitations

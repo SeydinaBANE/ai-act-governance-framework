@@ -4,7 +4,7 @@ from fastapi import HTTPException, Request, status
 from fastapi.responses import JSONResponse
 
 
-class AppError(HTTPException):
+class AppError(HTTPException):  # type: ignore[misc]
     pass
 
 

@@ -118,7 +118,7 @@ async def delete_system(
     db: DbSession,
     current_user: CurrentUser,
 ) -> None:
-    from app.core.dependencies import ForbiddenError
+    from app.core.exceptions import ForbiddenError
     from app.models.user import UserRole
 
     if current_user.role != UserRole.ADMIN:

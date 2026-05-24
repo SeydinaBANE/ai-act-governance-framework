@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import uuid
 from datetime import UTC, date, datetime
+from typing import Any
 
 from sqlalchemy import Date, DateTime, ForeignKey, Integer, String, Text
 from sqlalchemy.dialects.postgresql import JSONB, UUID
@@ -21,13 +22,13 @@ class RiskAssessment(Base):
     assessed_by: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"), nullable=True
     )
-    questionnaire: Mapped[dict] = mapped_column(JSONB, nullable=False)
-    score_details: Mapped[dict] = mapped_column(JSONB, nullable=False)
+    questionnaire: Mapped[dict[str, Any]] = mapped_column(JSONB, nullable=False)
+    score_details: Mapped[dict[str, Any]] = mapped_column(JSONB, nullable=False)
     total_score: Mapped[int] = mapped_column(Integer, nullable=False)
     risk_category: Mapped[RiskCategory] = mapped_column(String(50), nullable=False)
     justification: Mapped[str | None] = mapped_column(Text)
     ai_act_articles: Mapped[list[str] | None] = mapped_column(JSONB)
-    required_actions: Mapped[list[dict] | None] = mapped_column(JSONB)
+    required_actions: Mapped[list[dict[str, Any]] | None] = mapped_column(JSONB)
     valid_until: Mapped[date | None] = mapped_column(Date)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=lambda: datetime.now(UTC), nullable=False

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import uuid
 from datetime import UTC, datetime
+from typing import Any
 
 from sqlalchemy import DateTime, ForeignKey, String, Text
 from sqlalchemy.dialects.postgresql import JSONB, UUID
@@ -26,8 +27,8 @@ class AuditLog(Base):
     resource_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), index=True)
 
     # Détail
-    input_payload: Mapped[dict | None] = mapped_column(JSONB)
-    output_summary: Mapped[dict | None] = mapped_column(JSONB)
+    input_payload: Mapped[dict[str, Any] | None] = mapped_column(JSONB)
+    output_summary: Mapped[dict[str, Any] | None] = mapped_column(JSONB)
 
     # Intégrité
     payload_hash: Mapped[str] = mapped_column(String(64), nullable=False)

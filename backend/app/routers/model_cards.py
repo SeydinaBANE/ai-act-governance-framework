@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import uuid
-from typing import Annotated
+from typing import Annotated, Any
 
 import httpx
 import structlog
@@ -126,7 +126,7 @@ async def publish_model_card(
     return card
 
 
-@router.post("/{system_id}/generate", response_model=dict)
+@router.post("/{system_id}/generate", response_model=dict[str, Any])
 @limiter.limit("5/minute")
 async def generate_sections(
     request: Request,
@@ -134,7 +134,7 @@ async def generate_sections(
     db: DbSession,
     current_user: CurrentUser,
     _reviewer: Annotated[User, ReviewerOrAbove],
-) -> dict:
+) -> dict[str, Any]:
     """Auto-génère les sections textuelles via OpenRouter LLM."""
     system = await db.get(AISystem, system_id)
     if not system:

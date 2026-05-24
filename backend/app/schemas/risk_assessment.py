@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import uuid
 from datetime import date, datetime
+from typing import Any
 
 from pydantic import BaseModel, ConfigDict
 
@@ -28,7 +29,7 @@ class RiskAssessmentOut(BaseModel):
     risk_category: RiskCategory
     justification: str | None
     ai_act_articles: list[str] | None
-    required_actions: list[dict] | None
+    required_actions: list[dict[str, Any]] | None
     valid_until: date | None
     created_at: datetime
 

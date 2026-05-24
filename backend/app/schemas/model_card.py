@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import uuid
 from datetime import datetime
+from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -74,10 +75,10 @@ class ModelCardOut(BaseModel):
     architecture: str | None
     framework: str | None
     license: str | None
-    training_datasets: list[dict] | None
+    training_datasets: list[dict[str, Any]] | None
     preprocessing_steps: str | None
     known_biases: str | None
-    metrics: list[dict] | None
+    metrics: list[dict[str, Any]] | None
     evaluation_procedure: str | None
     limitations: str | None
     out_of_scope_uses: str | None
