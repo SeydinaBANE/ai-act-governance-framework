@@ -5,12 +5,12 @@ from typing import Annotated
 
 import httpx
 import structlog
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, Request, status
 from sqlalchemy import select
 
 from app.core.dependencies import CurrentUser, ReviewerOrAbove
-from app.database import DbSession
 from app.core.rate_limiter import limiter
+from app.database import DbSession
 from app.models.ai_system import AISystem
 from app.models.model_card import ModelCard
 from app.models.risk_assessment import RiskAssessment
@@ -111,6 +111,7 @@ async def publish_model_card(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Model card introuvable")
 
     from app.models.model_card import ModelCardStatus
+
     card.status = ModelCardStatus.PUBLISHED
     card.reviewed_by = current_user.id
     await db.flush()

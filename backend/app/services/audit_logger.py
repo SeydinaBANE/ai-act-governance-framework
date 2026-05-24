@@ -21,7 +21,8 @@ def _compute_hash(
     timestamp: str,
     input_payload: dict[str, Any] | None,
 ) -> str:
-    raw = f"{actor_id}|{action}|{resource_id}|{timestamp}|{json.dumps(input_payload or {}, sort_keys=True)}"
+    payload_str = json.dumps(input_payload or {}, sort_keys=True)
+    raw = f"{actor_id}|{action}|{resource_id}|{timestamp}|{payload_str}"
     return hashlib.sha256(raw.encode()).hexdigest()
 
 
@@ -42,6 +43,7 @@ async def log_action(
     entry = AuditLog()
     # compute timestamp before persisting
     from datetime import UTC, datetime
+
     ts = datetime.now(UTC)
 
     entry.actor_id = actor.id
@@ -55,9 +57,7 @@ async def log_action(
     entry.user_agent = user_agent
     entry.request_id = request_id
     entry.created_at = ts
-    entry.payload_hash = _compute_hash(
-        str(actor.id), action, rid, ts.isoformat(), input_payload
-    )
+    entry.payload_hash = _compute_hash(str(actor.id), action, rid, ts.isoformat(), input_payload)
 
     db.add(entry)
     await db.flush()

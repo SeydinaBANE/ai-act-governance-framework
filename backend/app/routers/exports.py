@@ -8,8 +8,8 @@ from fastapi.responses import Response
 from sqlalchemy import select
 
 from app.core.dependencies import CurrentUser
-from app.database import DbSession
 from app.core.rate_limiter import limiter
+from app.database import DbSession
 from app.models.ai_system import AISystem
 from app.models.audit_log import AuditLog
 from app.models.model_card import ModelCard

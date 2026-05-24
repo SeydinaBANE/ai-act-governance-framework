@@ -101,4 +101,5 @@ class ModelCardList(BaseModel):
 
 class AIGenerateRequest(BaseModel):
     """Demande de génération automatique des sections textuelles via LLM."""
+
     pass

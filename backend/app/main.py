@@ -6,7 +6,6 @@ from contextlib import asynccontextmanager
 import structlog
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
@@ -14,7 +13,16 @@ from slowapi.middleware import SlowAPIMiddleware
 from app.config import settings
 from app.core.exceptions import http_exception_handler
 from app.core.rate_limiter import limiter
-from app.routers import ai_systems, audit_logs, auth, dashboard, exports, model_cards, pii_scanner, risk_scorer
+from app.routers import (
+    ai_systems,
+    audit_logs,
+    auth,
+    dashboard,
+    exports,
+    model_cards,
+    pii_scanner,
+    risk_scorer,
+)
 
 log = structlog.get_logger(__name__)
 
@@ -74,6 +82,7 @@ app.add_middleware(
 @app.middleware("http")
 async def add_request_id(request: Request, call_next):  # type: ignore[no-untyped-def]
     import uuid
+
     request_id = str(uuid.uuid4())
     structlog.contextvars.bind_contextvars(request_id=request_id)
     response = await call_next(request)

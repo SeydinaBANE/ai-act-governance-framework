@@ -4,16 +4,15 @@ import uuid
 from typing import Annotated
 
 import structlog
-from fastapi import APIRouter, Depends, HTTPException, Request, status
+from fastapi import APIRouter, HTTPException, Request, status
 from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
 from app.core.dependencies import AdminUser, CurrentUser
+from app.core.rate_limiter import limiter
 from app.core.security import create_access_token, hash_password, verify_password
 from app.database import DbSession
-from app.core.rate_limiter import limiter
-from app.models.user import User, UserRole
+from app.models.user import User
 from app.schemas.auth import LoginRequest, TokenResponse, UserCreate, UserOut, UserUpdate
 from app.services import audit_logger
 

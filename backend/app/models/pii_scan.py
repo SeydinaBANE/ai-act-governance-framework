@@ -11,20 +11,20 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.database import Base
 
 
-class ScanSourceType(str, enum.Enum):
+class ScanSourceType(enum.StrEnum):
     FILE = "file"
     TEXT = "text"
     DATABASE_SAMPLE = "database_sample"
 
 
-class ScanStatus(str, enum.Enum):
+class ScanStatus(enum.StrEnum):
     PENDING = "pending"
     RUNNING = "running"
     COMPLETED = "completed"
     FAILED = "failed"
 
 
-class PIIScanRiskLevel(str, enum.Enum):
+class PIIScanRiskLevel(enum.StrEnum):
     CRITICAL = "critical"
     HIGH = "high"
     MEDIUM = "medium"
@@ -35,18 +35,14 @@ class PIIScanRiskLevel(str, enum.Enum):
 class PIIScan(Base):
     __tablename__ = "pii_scans"
 
-    id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
-    )
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     ai_system_id: Mapped[uuid.UUID | None] = mapped_column(
         UUID(as_uuid=True), ForeignKey("ai_systems.id", ondelete="SET NULL")
     )
     scanned_by: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"), nullable=True
     )
-    source_type: Mapped[ScanSourceType] = mapped_column(
-        Enum(ScanSourceType), nullable=False
-    )
+    source_type: Mapped[ScanSourceType] = mapped_column(Enum(ScanSourceType), nullable=False)
     source_name: Mapped[str | None] = mapped_column(String(255))
     source_hash: Mapped[str | None] = mapped_column(String(64))
     total_items: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
@@ -63,4 +59,4 @@ class PIIScan(Base):
         DateTime(timezone=True), default=lambda: datetime.now(UTC), nullable=False, index=True
     )
 
-    ai_system: Mapped["AISystem"] = relationship("AISystem", foreign_keys=[ai_system_id])  # type: ignore[name-defined]
+    ai_system: Mapped[AISystem] = relationship("AISystem", foreign_keys=[ai_system_id])  # type: ignore[name-defined]

@@ -105,7 +105,6 @@ _OBLIGATIONS: dict[str, list[dict[str, str]]] = {
 def assess(answers: dict[str, bool]) -> RiskScorerResult:
     questionnaire = _load_questionnaire()
     questions = _flatten_questions(questionnaire)
-    question_map = {q["id"]: q for q in questions}
 
     score_details: dict[str, Any] = {}
     triggered_articles: list[str] = []
@@ -152,8 +151,8 @@ def assess(answers: dict[str, bool]) -> RiskScorerResult:
             justification=(
                 f"Le système relève de l'Annexe III de l'AI Act ({', '.join(triggered_articles)}). "
                 "En tant que système à haut risque, il est soumis à des obligations strictes "
-                "de gestion des risques, de traçabilité, de supervision humaine et d'enregistrement "
-                "dans la base de données EU avant mise en service."
+                "de gestion des risques, de traçabilité, de supervision humaine "
+                "et d'enregistrement dans la base de données EU avant mise en service."
             ),
             ai_act_articles=triggered_articles,
             required_actions=_OBLIGATIONS["high_risk"],
@@ -161,11 +160,17 @@ def assess(answers: dict[str, bool]) -> RiskScorerResult:
         )
 
     # --- Niveau 3 : scoring pondéré (limited vs minimal) ---
-    scored_questions = [q for q in questions if not q.get("triggers_prohibited") and not q.get("triggers_high_risk")]
+    scored_questions = [
+        q for q in questions if not q.get("triggers_prohibited") and not q.get("triggers_high_risk")
+    ]
     for q in scored_questions:
         # Questions non répondues n'affectent pas le score (ni positif ni négatif)
         if q["id"] not in answers:
-            score_details[q["id"]] = {"triggered": None, "weight": q["weight"], "contributes": False}
+            score_details[q["id"]] = {
+                "triggered": None,
+                "weight": q["weight"],
+                "contributes": False,
+            }
             continue
 
         answer = answers[q["id"]]
@@ -187,15 +192,17 @@ def assess(answers: dict[str, bool]) -> RiskScorerResult:
         justification = (
             f"Le système obtient un score de risque de {total_score}/100. "
             "Il relève de la catégorie 'risque limité' et doit respecter les obligations "
-            "de transparence de l'Art. 50 : informer les utilisateurs qu'ils interagissent avec un système IA."
+            "de transparence de l'Art. 50 : informer les utilisateurs "
+            "qu'ils interagissent avec un système IA."
         )
         articles = ["Art. 50"]
     else:
         category = RiskCategory.MINIMAL_RISK
         justification = (
             f"Le système obtient un score de risque de {total_score}/100. "
-            "Il relève de la catégorie 'risque minimal'. Aucune obligation réglementaire spécifique "
-            "n'est imposée par l'AI Act, mais le respect des bonnes pratiques est recommandé."
+            "Il relève de la catégorie 'risque minimal'. "
+            "Aucune obligation réglementaire spécifique n'est imposée par l'AI Act, "
+            "mais le respect des bonnes pratiques est recommandé."
         )
         articles = []
 

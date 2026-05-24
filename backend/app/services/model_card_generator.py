@@ -18,8 +18,14 @@ _SYSTEM_PROMPT = """Tu es un expert en gouvernance IA et conformité AI Act.
 pour les sections d'une model card européenne conforme à l'AI Act.
 Sois précis et factuel. Réponds UNIQUEMENT avec un objet JSON valide, sans texte avant ou après."""
 
-_EXPECTED_KEYS = ["limitations", "out_of_scope_uses", "ethical_considerations",
-                  "conformity_measures", "human_oversight", "known_biases"]
+_EXPECTED_KEYS = [
+    "limitations",
+    "out_of_scope_uses",
+    "ethical_considerations",
+    "conformity_measures",
+    "human_oversight",
+    "known_biases",
+]
 
 
 def _extract_json(text: str) -> dict[str, Any]:
@@ -111,7 +117,9 @@ Génère un objet JSON avec exactement ces 6 clés (2-3 phrases chacune, en fran
         log.error("openrouter_json_parse_failed", error=str(e))
         return {}
     except httpx.HTTPStatusError as e:
-        log.error("openrouter_http_error", status=e.response.status_code, body=e.response.text[:200])
+        log.error(
+            "openrouter_http_error", status=e.response.status_code, body=e.response.text[:200]
+        )
         return {}
     except (httpx.HTTPError, KeyError) as e:
         log.error("openrouter_generation_failed", error=str(e))

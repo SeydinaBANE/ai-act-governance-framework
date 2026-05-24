@@ -11,7 +11,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.database import Base
 
 
-class SystemStatus(str, enum.Enum):
+class SystemStatus(enum.StrEnum):
     DRAFT = "draft"
     UNDER_REVIEW = "under_review"
     COMPLIANT = "compliant"
@@ -19,7 +19,7 @@ class SystemStatus(str, enum.Enum):
     EXEMPTED = "exempted"
 
 
-class RiskCategory(str, enum.Enum):
+class RiskCategory(enum.StrEnum):
     PROHIBITED = "prohibited"
     HIGH_RISK = "high_risk"
     LIMITED_RISK = "limited_risk"
@@ -29,9 +29,7 @@ class RiskCategory(str, enum.Enum):
 class AISystem(Base):
     __tablename__ = "ai_systems"
 
-    id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
-    )
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     name: Mapped[str] = mapped_column(String(255), nullable=False)
     description: Mapped[str | None] = mapped_column(Text)
     version: Mapped[str | None] = mapped_column(String(100))
@@ -59,7 +57,7 @@ class AISystem(Base):
         nullable=False,
     )
 
-    creator: Mapped["User"] = relationship("User", foreign_keys=[created_by], lazy="selectin")  # type: ignore[name-defined]
+    creator: Mapped[User] = relationship("User", foreign_keys=[created_by], lazy="selectin")  # type: ignore[name-defined]
 
     def __repr__(self) -> str:
         return f"<AISystem {self.name} [{self.status}]>"

@@ -7,16 +7,16 @@ from app.models.user import User, UserRole
 
 __all__ = [
     "AISystem",
-    "RiskCategory",
-    "SystemStatus",
     "AuditLog",
     "ModelCard",
     "ModelCardStatus",
     "PIIScan",
     "PIIScanRiskLevel",
+    "RiskAssessment",
+    "RiskCategory",
     "ScanSourceType",
     "ScanStatus",
-    "RiskAssessment",
+    "SystemStatus",
     "User",
     "UserRole",
 ]

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Annotated
+from typing import Annotated, Any
 from uuid import UUID
 
 import structlog
@@ -41,7 +41,7 @@ async def get_current_user(
 CurrentUser = Annotated[User, Depends(get_current_user)]
 
 
-def require_role(*roles: UserRole):  # type: ignore[no-untyped-def]
+def require_role(*roles: UserRole) -> Any:
     async def _check(current_user: CurrentUser) -> User:
         if current_user.role not in roles:
             raise ForbiddenError()

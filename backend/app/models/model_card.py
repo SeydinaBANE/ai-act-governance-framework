@@ -11,7 +11,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.database import Base
 
 
-class ModelCardStatus(str, enum.Enum):
+class ModelCardStatus(enum.StrEnum):
     DRAFT = "draft"
     PUBLISHED = "published"
     ARCHIVED = "archived"
@@ -20,9 +20,7 @@ class ModelCardStatus(str, enum.Enum):
 class ModelCard(Base):
     __tablename__ = "model_cards"
 
-    id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
-    )
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     ai_system_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), ForeignKey("ai_systems.id", ondelete="CASCADE"), nullable=False
     )
@@ -77,4 +75,4 @@ class ModelCard(Base):
         nullable=False,
     )
 
-    ai_system: Mapped["AISystem"] = relationship("AISystem", foreign_keys=[ai_system_id])  # type: ignore[name-defined]
+    ai_system: Mapped[AISystem] = relationship("AISystem", foreign_keys=[ai_system_id])  # type: ignore[name-defined]

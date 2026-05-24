@@ -19,14 +19,16 @@ select = [
     "RUF", # ruff-specific
 ]
 ignore = [
-    "ANN101", # self pas annoté
-    "ANN102", # cls pas annoté
     "S101",   # assert dans les tests
     "B008",   # ne pas appeler Depends() en default arg
+    "S105",   # faux positif OAuth2 : "bearer" n'est pas un mot de passe
+    "F821",   # forward refs SQLAlchemy Mapped[] OK avec from __future__ import annotations
+    "ANN401", # Any autorisé pour les factory de dépendances FastAPI (require_role)
 ]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["S", "ANN"]
+"app/main.py" = ["ANN"]  # middleware ASGI : typage call_next est infaisable proprement
 
 [tool.ruff.format]
 quote-style = "double"

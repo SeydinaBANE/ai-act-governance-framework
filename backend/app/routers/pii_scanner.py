@@ -9,8 +9,8 @@ from sqlalchemy import select
 
 from app.config import settings
 from app.core.dependencies import CurrentUser, ReviewerOrAbove
-from app.database import DbSession
 from app.core.rate_limiter import limiter
+from app.database import DbSession
 from app.models.pii_scan import PIIScan, ScanSourceType
 from app.models.user import User
 from app.schemas.pii_scan import PIIScanList, PIIScanOut, PIIScanTextRequest
@@ -63,7 +63,10 @@ async def scan_text(
         resource_type="pii_scan",
         resource_id=scan.id,
         input_payload={"source_type": "text", "text_length": len(body.text)},
-        output_summary={"pii_found": result["pii_found"], "entity_summary": result["entity_summary"]},
+        output_summary={
+            "pii_found": result["pii_found"],
+            "entity_summary": result["entity_summary"],
+        },
         ip_address=request.client.host if request.client else None,
     )
 
@@ -127,7 +130,10 @@ async def scan_file(
         resource_type="pii_scan",
         resource_id=scan.id,
         input_payload={"source_type": "file", "filename": filename, "size_bytes": len(content)},
-        output_summary={"pii_found": result["pii_found"], "entity_summary": result["entity_summary"]},
+        output_summary={
+            "pii_found": result["pii_found"],
+            "entity_summary": result["entity_summary"],
+        },
         ip_address=request.client.host if request.client else None,
     )
 

@@ -39,14 +39,46 @@ RISK_LABELS = {
 def _styles() -> dict:
     base = getSampleStyleSheet()
     return {
-        "title": ParagraphStyle("title", parent=base["Title"], fontSize=20, spaceAfter=6, textColor=colors.HexColor("#1E3A5F")),
-        "h1": ParagraphStyle("h1", parent=base["Heading1"], fontSize=14, spaceBefore=14, spaceAfter=4, textColor=colors.HexColor("#1E3A5F")),
-        "h2": ParagraphStyle("h2", parent=base["Heading2"], fontSize=11, spaceBefore=10, spaceAfter=3, textColor=colors.HexColor("#374151")),
+        "title": ParagraphStyle(
+            "title",
+            parent=base["Title"],
+            fontSize=20,
+            spaceAfter=6,
+            textColor=colors.HexColor("#1E3A5F"),
+        ),
+        "h1": ParagraphStyle(
+            "h1",
+            parent=base["Heading1"],
+            fontSize=14,
+            spaceBefore=14,
+            spaceAfter=4,
+            textColor=colors.HexColor("#1E3A5F"),
+        ),
+        "h2": ParagraphStyle(
+            "h2",
+            parent=base["Heading2"],
+            fontSize=11,
+            spaceBefore=10,
+            spaceAfter=3,
+            textColor=colors.HexColor("#374151"),
+        ),
         "body": ParagraphStyle("body", parent=base["Normal"], fontSize=9, spaceAfter=4, leading=14),
-        "small": ParagraphStyle("small", parent=base["Normal"], fontSize=8, textColor=colors.HexColor("#6B7280")),
-        "label": ParagraphStyle("label", parent=base["Normal"], fontSize=8, textColor=colors.HexColor("#6B7280"), spaceAfter=1),
-        "value": ParagraphStyle("value", parent=base["Normal"], fontSize=9, spaceAfter=6, leading=13),
-        "risk_badge": ParagraphStyle("risk_badge", parent=base["Normal"], fontSize=13, fontName="Helvetica-Bold"),
+        "small": ParagraphStyle(
+            "small", parent=base["Normal"], fontSize=8, textColor=colors.HexColor("#6B7280")
+        ),
+        "label": ParagraphStyle(
+            "label",
+            parent=base["Normal"],
+            fontSize=8,
+            textColor=colors.HexColor("#6B7280"),
+            spaceAfter=1,
+        ),
+        "value": ParagraphStyle(
+            "value", parent=base["Normal"], fontSize=9, spaceAfter=6, leading=13
+        ),
+        "risk_badge": ParagraphStyle(
+            "risk_badge", parent=base["Normal"], fontSize=13, fontName="Helvetica-Bold"
+        ),
     }
 
 
@@ -75,7 +107,9 @@ def generate_compliance_report(
     # ── En-tête ──────────────────────────────────────────────────────────
     story.append(Paragraph("Rapport de conformité AI Act", s["title"]))
     story.append(Paragraph(f"Généré le {now}", s["small"]))
-    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#E5E7EB"), spaceAfter=10))
+    story.append(
+        HRFlowable(width="100%", thickness=1, color=colors.HexColor("#E5E7EB"), spaceAfter=10)
+    )
     story.append(Spacer(1, 0.3 * cm))
 
     # ── Informations système ──────────────────────────────────────────────
@@ -93,15 +127,19 @@ def generate_compliance_report(
         info_data.append(["Cas d'usage", system.use_case])
 
     info_table = Table(info_data, colWidths=[4.5 * cm, 12 * cm])
-    info_table.setStyle(TableStyle([
-        ("BACKGROUND", (0, 0), (0, -1), colors.HexColor("#F3F4F6")),
-        ("FONTSIZE", (0, 0), (-1, -1), 9),
-        ("GRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#E5E7EB")),
-        ("VALIGN", (0, 0), (-1, -1), "TOP"),
-        ("TOPPADDING", (0, 0), (-1, -1), 4),
-        ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
-        ("LEFTPADDING", (0, 0), (-1, -1), 6),
-    ]))
+    info_table.setStyle(
+        TableStyle(
+            [
+                ("BACKGROUND", (0, 0), (0, -1), colors.HexColor("#F3F4F6")),
+                ("FONTSIZE", (0, 0), (-1, -1), 9),
+                ("GRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#E5E7EB")),
+                ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                ("TOPPADDING", (0, 0), (-1, -1), 4),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+                ("LEFTPADDING", (0, 0), (-1, -1), 6),
+            ]
+        )
+    )
     story.append(info_table)
 
     if system.tech_stack:
@@ -120,14 +158,18 @@ def generate_compliance_report(
         risk_label = RISK_LABELS.get(assessment.risk_category, str(assessment.risk_category))
 
         badge_table = Table([[Paragraph(risk_label, s["risk_badge"])]], colWidths=[16.5 * cm])
-        badge_table.setStyle(TableStyle([
-            ("BACKGROUND", (0, 0), (0, 0), risk_color),
-            ("TEXTCOLOR", (0, 0), (0, 0), colors.white),
-            ("TOPPADDING", (0, 0), (0, 0), 10),
-            ("BOTTOMPADDING", (0, 0), (0, 0), 10),
-            ("LEFTPADDING", (0, 0), (0, 0), 12),
-            ("ROUNDEDCORNERS", [4, 4, 4, 4]),
-        ]))
+        badge_table.setStyle(
+            TableStyle(
+                [
+                    ("BACKGROUND", (0, 0), (0, 0), risk_color),
+                    ("TEXTCOLOR", (0, 0), (0, 0), colors.white),
+                    ("TOPPADDING", (0, 0), (0, 0), 10),
+                    ("BOTTOMPADDING", (0, 0), (0, 0), 10),
+                    ("LEFTPADDING", (0, 0), (0, 0), 12),
+                    ("ROUNDEDCORNERS", [4, 4, 4, 4]),
+                ]
+            )
+        )
         story.append(badge_table)
         story.append(Spacer(1, 0.2 * cm))
 
@@ -145,17 +187,23 @@ def generate_compliance_report(
             story.append(Paragraph("Obligations réglementaires :", s["h2"]))
             action_data = [["Article", "Obligation", "Échéance"]]
             for action in assessment.required_actions:
-                action_data.append([action["article"], action["obligation"], action.get("deadline", "N/A")])
+                action_data.append(
+                    [action["article"], action["obligation"], action.get("deadline", "N/A")]
+                )
             action_table = Table(action_data, colWidths=[3 * cm, 10 * cm, 3.5 * cm])
-            action_table.setStyle(TableStyle([
-                ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#FEF3C7")),
-                ("FONTSIZE", (0, 0), (-1, -1), 8),
-                ("GRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#E5E7EB")),
-                ("VALIGN", (0, 0), (-1, -1), "TOP"),
-                ("TOPPADDING", (0, 0), (-1, -1), 4),
-                ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
-                ("LEFTPADDING", (0, 0), (-1, -1), 5),
-            ]))
+            action_table.setStyle(
+                TableStyle(
+                    [
+                        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#FEF3C7")),
+                        ("FONTSIZE", (0, 0), (-1, -1), 8),
+                        ("GRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#E5E7EB")),
+                        ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                        ("TOPPADDING", (0, 0), (-1, -1), 4),
+                        ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+                        ("LEFTPADDING", (0, 0), (-1, -1), 5),
+                    ]
+                )
+            )
             story.append(action_table)
 
     # ── Model Card ────────────────────────────────────────────────────────
@@ -185,16 +233,22 @@ def generate_compliance_report(
             story.append(Paragraph("Métriques de performance :", s["h2"]))
             metric_data = [["Métrique", "Valeur", "Dataset"]]
             for m in model_card.metrics:
-                metric_data.append([m.get("name", ""), str(m.get("value", "")), m.get("dataset", "N/A")])
+                metric_data.append(
+                    [m.get("name", ""), str(m.get("value", "")), m.get("dataset", "N/A")]
+                )
             metric_table = Table(metric_data, colWidths=[5 * cm, 5 * cm, 6.5 * cm])
-            metric_table.setStyle(TableStyle([
-                ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#EFF6FF")),
-                ("FONTSIZE", (0, 0), (-1, -1), 8),
-                ("GRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#E5E7EB")),
-                ("TOPPADDING", (0, 0), (-1, -1), 4),
-                ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
-                ("LEFTPADDING", (0, 0), (-1, -1), 5),
-            ]))
+            metric_table.setStyle(
+                TableStyle(
+                    [
+                        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#EFF6FF")),
+                        ("FONTSIZE", (0, 0), (-1, -1), 8),
+                        ("GRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#E5E7EB")),
+                        ("TOPPADDING", (0, 0), (-1, -1), 4),
+                        ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+                        ("LEFTPADDING", (0, 0), (-1, -1), 5),
+                    ]
+                )
+            )
             story.append(metric_table)
 
     # ── Audit (dernières entrées) ─────────────────────────────────────────
@@ -203,31 +257,39 @@ def generate_compliance_report(
         story.append(Paragraph("4. Traçabilité (dernières actions)", s["h1"]))
         audit_data = [["Date", "Acteur", "Action", "Hash SHA-256"]]
         for entry in audit_logs[:10]:
-            audit_data.append([
-                entry.created_at.strftime("%d/%m/%Y %H:%M"),
-                entry.actor_email,
-                entry.action,
-                entry.payload_hash[:16] + "…",
-            ])
+            audit_data.append(
+                [
+                    entry.created_at.strftime("%d/%m/%Y %H:%M"),
+                    entry.actor_email,
+                    entry.action,
+                    entry.payload_hash[:16] + "…",
+                ]
+            )
         audit_table = Table(audit_data, colWidths=[3.5 * cm, 4 * cm, 5 * cm, 4 * cm])
-        audit_table.setStyle(TableStyle([
-            ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#F3F4F6")),
-            ("FONTSIZE", (0, 0), (-1, -1), 7.5),
-            ("GRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#E5E7EB")),
-            ("TOPPADDING", (0, 0), (-1, -1), 3),
-            ("BOTTOMPADDING", (0, 0), (-1, -1), 3),
-            ("LEFTPADDING", (0, 0), (-1, -1), 4),
-        ]))
+        audit_table.setStyle(
+            TableStyle(
+                [
+                    ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#F3F4F6")),
+                    ("FONTSIZE", (0, 0), (-1, -1), 7.5),
+                    ("GRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#E5E7EB")),
+                    ("TOPPADDING", (0, 0), (-1, -1), 3),
+                    ("BOTTOMPADDING", (0, 0), (-1, -1), 3),
+                    ("LEFTPADDING", (0, 0), (-1, -1), 4),
+                ]
+            )
+        )
         story.append(audit_table)
 
     # ── Pied de page ─────────────────────────────────────────────────────
     story.append(Spacer(1, 0.5 * cm))
     story.append(HRFlowable(width="100%", thickness=0.5, color=colors.HexColor("#E5E7EB")))
     story.append(Spacer(1, 0.2 * cm))
-    story.append(Paragraph(
-        "Document généré automatiquement par AI Act Governance Framework · Confidentiel DSI",
-        s["small"],
-    ))
+    story.append(
+        Paragraph(
+            "Document généré automatiquement par AI Act Governance Framework · Confidentiel DSI",
+            s["small"],
+        )
+    )
 
     doc.build(story)
     buffer.seek(0)

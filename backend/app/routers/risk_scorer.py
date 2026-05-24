@@ -6,7 +6,6 @@ from typing import Annotated, Any
 import structlog
 from fastapi import APIRouter, HTTPException, status
 from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.dependencies import CurrentUser, ReviewerOrAbove
 from app.database import DbSession
@@ -31,7 +30,11 @@ async def get_questionnaire(current_user: CurrentUser) -> dict[str, Any]:
     return scorer.get_questionnaire()
 
 
-@router.post("/assess/{system_id}", response_model=RiskAssessmentOut, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "/assess/{system_id}",
+    response_model=RiskAssessmentOut,
+    status_code=status.HTTP_201_CREATED,
+)
 async def assess_system(
     system_id: uuid.UUID,
     body: RiskAssessmentRequest,
