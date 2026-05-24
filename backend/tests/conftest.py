@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from collections.abc import AsyncGenerator
 
 import pytest_asyncio
@@ -12,7 +13,13 @@ from app.database import Base, get_db
 from app.main import app
 from app.models.user import User, UserRole
 
-TEST_DB_URL = "postgresql+asyncpg://aiact:aiact_dev_secret_2026@postgres:5432/aiact_governance_test"
+# En CI, DATABASE_URL pointe sur localhost (service container GitHub Actions).
+# En local Docker, on force postgres:5432. La base de test utilise le même host que la prod.
+_base_url = os.getenv(
+    "DATABASE_URL",
+    "postgresql+asyncpg://aiact:aiact_dev_secret_2026@postgres:5432/aiact_governance",
+)
+TEST_DB_URL = _base_url.rsplit("/", 1)[0] + "/aiact_governance_test"
 
 
 @pytest_asyncio.fixture(scope="session")
