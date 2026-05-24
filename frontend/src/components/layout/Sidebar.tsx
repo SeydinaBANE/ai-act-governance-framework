@@ -9,6 +9,7 @@ import {
   ClipboardList,
   LogOut,
   Scale,
+  FileText,
 } from "lucide-react";
 import { clearToken, getUserFromToken } from "@/lib/auth";
 import { cn } from "@/lib/utils";
@@ -18,6 +19,7 @@ const navigation = [
   { name: "Systèmes IA", href: "/systems", icon: Cpu },
   { name: "Scanner PII", href: "/pii-scanner", icon: Shield },
   { name: "Journal d'audit", href: "/audit", icon: ClipboardList },
+  { name: "Model Cards", href: "/systems", icon: FileText },
 ];
 
 export function Sidebar() {

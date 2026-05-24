@@ -12,6 +12,7 @@ from app.config import settings
 from app.core.dependencies import AdminUser, CurrentUser
 from app.core.security import create_access_token, hash_password, verify_password
 from app.database import DbSession
+from app.core.rate_limiter import limiter
 from app.models.user import User, UserRole
 from app.schemas.auth import LoginRequest, TokenResponse, UserCreate, UserOut, UserUpdate
 from app.services import audit_logger
@@ -22,7 +23,8 @@ router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 
 @router.post("/login", response_model=TokenResponse)
-async def login(body: LoginRequest, db: DbSession) -> TokenResponse:
+@limiter.limit("10/minute")
+async def login(request: Request, body: LoginRequest, db: DbSession) -> TokenResponse:
     result = await db.execute(select(User).where(User.email == body.email))
     user = result.scalar_one_or_none()
 
@@ -49,7 +51,9 @@ async def get_me(current_user: CurrentUser) -> User:
 
 
 @router.post("/users", response_model=UserOut, status_code=status.HTTP_201_CREATED)
+@limiter.limit("20/hour")
 async def create_user(
+    request: Request,
     body: UserCreate,
     db: DbSession,
     _admin: Annotated[User, AdminUser],

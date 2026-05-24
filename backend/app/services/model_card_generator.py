@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 from typing import Any
 
 import httpx
@@ -15,7 +16,24 @@ log = structlog.get_logger(__name__)
 _SYSTEM_PROMPT = """Tu es un expert en gouvernance IA et conformité AI Act.
 À partir des informations d'un système IA, génère des descriptions concises et professionnelles
 pour les sections d'une model card européenne conforme à l'AI Act.
-Réponds uniquement en JSON avec les clés demandées. Sois précis et factuel."""
+Sois précis et factuel. Réponds UNIQUEMENT avec un objet JSON valide, sans texte avant ou après."""
+
+_EXPECTED_KEYS = ["limitations", "out_of_scope_uses", "ethical_considerations",
+                  "conformity_measures", "human_oversight", "known_biases"]
+
+
+def _extract_json(text: str) -> dict[str, Any]:
+    """Extrait un objet JSON d'un texte qui peut contenir du markdown."""
+    text = text.strip()
+    # Extraire depuis un bloc ```json ... ```
+    match = re.search(r"```(?:json)?\s*(\{.*?\})\s*```", text, re.DOTALL)
+    if match:
+        text = match.group(1)
+    # Chercher le premier { ... } dans le texte
+    match = re.search(r"\{.*\}", text, re.DOTALL)
+    if match:
+        text = match.group(0)
+    return json.loads(text)  # type: ignore[no-any-return]
 
 
 async def generate_sections(
@@ -23,6 +41,10 @@ async def generate_sections(
     system: AISystem,
     assessment: RiskAssessment | None = None,
 ) -> dict[str, Any]:
+    if not settings.openrouter_api_key:
+        log.warning("openrouter_not_configured")
+        return {}
+
     context = {
         "system_name": system.name,
         "description": system.description,
@@ -32,24 +54,22 @@ async def generate_sections(
         "affects_persons": system.affects_persons,
         "deployment_env": system.deployment_env,
         "data_types": system.data_types,
-        "risk_category": assessment.risk_category if assessment else "non évalué",
+        "risk_category": str(assessment.risk_category.value) if assessment else "non évalué",
         "ai_act_articles": assessment.ai_act_articles if assessment else [],
     }
 
-    prompt = f"""Génère les sections suivantes pour ce système IA :
+    prompt = f"""Voici les informations d'un système IA :
 {json.dumps(context, ensure_ascii=False, indent=2)}
 
-Retourne un JSON avec exactement ces clés :
-- "limitations": limitations connues du système (2-3 phrases)
-- "out_of_scope_uses": usages non prévus et à éviter (2-3 phrases)
-- "ethical_considerations": considérations éthiques spécifiques (2-3 phrases)
-- "conformity_measures": mesures de conformité AI Act en place ou à mettre en place (2-3 phrases)
-- "human_oversight": description de la supervision humaine (2-3 phrases)
-- "known_biases": biais potentiels identifiés (1-2 phrases)"""
-
-    if not settings.openrouter_api_key:
-        log.warning("openrouter_not_configured", message="Génération LLM désactivée")
-        return {}
+Génère un objet JSON avec exactement ces 6 clés (2-3 phrases chacune, en français) :
+{{
+  "limitations": "...",
+  "out_of_scope_uses": "...",
+  "ethical_considerations": "...",
+  "conformity_measures": "...",
+  "human_oversight": "...",
+  "known_biases": "..."
+}}"""
 
     try:
         response = await client.post(
@@ -65,16 +85,34 @@ Retourne un JSON avec exactement ces clés :
                     {"role": "system", "content": _SYSTEM_PROMPT},
                     {"role": "user", "content": prompt},
                 ],
-                "response_format": {"type": "json_object"},
                 "temperature": 0.3,
-                "max_tokens": 800,
+                "max_tokens": 1000,
             },
-            timeout=30.0,
+            timeout=45.0,
         )
         response.raise_for_status()
         data = response.json()
+
+        # Log si erreur renvoyée par OpenRouter
+        if "error" in data:
+            log.error("openrouter_api_error", error=data["error"])
+            return {}
+
         content = data["choices"][0]["message"]["content"]
-        return json.loads(content)  # type: ignore[no-any-return]
-    except (httpx.HTTPError, json.JSONDecodeError, KeyError) as e:
+        if not content:
+            log.error("openrouter_empty_content", raw_response=str(data))
+            return {}
+
+        result = _extract_json(content)
+        # Ne garder que les clés attendues
+        return {k: v for k, v in result.items() if k in _EXPECTED_KEYS}
+
+    except json.JSONDecodeError as e:
+        log.error("openrouter_json_parse_failed", error=str(e))
+        return {}
+    except httpx.HTTPStatusError as e:
+        log.error("openrouter_http_error", status=e.response.status_code, body=e.response.text[:200])
+        return {}
+    except (httpx.HTTPError, KeyError) as e:
         log.error("openrouter_generation_failed", error=str(e))
         return {}

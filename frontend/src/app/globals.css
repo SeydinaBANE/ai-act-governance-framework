@@ -18,6 +18,10 @@
     @apply bg-white rounded-lg border border-gray-200 shadow-sm;
   }
 
+  .input {
+    @apply rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500;
+  }
+
   .badge-risk-prohibited {
     @apply inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-red-100 text-red-800 border-red-200;
   }

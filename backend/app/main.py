@@ -1,31 +1,32 @@
 from __future__ import annotations
 
-from contextlib import asynccontextmanager
 from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
 
 import structlog
-import uvicorn
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from slowapi.middleware import SlowAPIMiddleware
 
 from app.config import settings
 from app.core.exceptions import http_exception_handler
-from app.routers import ai_systems, audit_logs, auth, dashboard, pii_scanner, risk_scorer
+from app.core.rate_limiter import limiter
+from app.routers import ai_systems, audit_logs, auth, dashboard, exports, model_cards, pii_scanner, risk_scorer
 
 log = structlog.get_logger(__name__)
 
 
 def configure_logging() -> None:
-    import logging
-    import structlog
-
     structlog.configure(
         processors=[
             structlog.contextvars.merge_contextvars,
             structlog.processors.add_log_level,
             structlog.processors.TimeStamper(fmt="iso"),
-            structlog.dev.ConsoleRenderer() if settings.environment == "development"
+            structlog.dev.ConsoleRenderer()
+            if settings.environment == "development"
             else structlog.processors.JSONRenderer(),
         ],
         wrapper_class=structlog.make_filtering_bound_logger(
@@ -49,10 +50,15 @@ app = FastAPI(
     description="Framework de gouvernance IA conforme à l'AI Act européen",
     version="1.0.0",
     lifespan=lifespan,
-    docs_url="/docs",
-    redoc_url="/redoc",
-    openapi_url="/openapi.json",
+    docs_url="/docs" if settings.environment != "production" else None,
+    redoc_url="/redoc" if settings.environment != "production" else None,
+    openapi_url="/openapi.json" if settings.environment != "production" else None,
 )
+
+# Rate limiting
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+app.add_middleware(SlowAPIMiddleware)
 
 # CORS
 app.add_middleware(
@@ -93,3 +99,5 @@ app.include_router(risk_scorer.router, prefix=API_PREFIX)
 app.include_router(pii_scanner.router, prefix=API_PREFIX)
 app.include_router(audit_logs.router, prefix=API_PREFIX)
 app.include_router(dashboard.router, prefix=API_PREFIX)
+app.include_router(model_cards.router, prefix=API_PREFIX)
+app.include_router(exports.router, prefix=API_PREFIX)

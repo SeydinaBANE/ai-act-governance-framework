@@ -4,12 +4,13 @@ import uuid
 from typing import Annotated
 
 import structlog
-from fastapi import APIRouter, HTTPException, Query, Request, UploadFile, status
+from fastapi import APIRouter, File, HTTPException, Query, Request, UploadFile, status
 from sqlalchemy import select
 
 from app.config import settings
 from app.core.dependencies import CurrentUser, ReviewerOrAbove
 from app.database import DbSession
+from app.core.rate_limiter import limiter
 from app.models.pii_scan import PIIScan, ScanSourceType
 from app.models.user import User
 from app.schemas.pii_scan import PIIScanList, PIIScanOut, PIIScanTextRequest
@@ -24,6 +25,7 @@ _MAX_BYTES = settings.max_upload_size_mb * 1024 * 1024
 
 
 @router.post("/scan/text", response_model=PIIScanOut, status_code=status.HTTP_201_CREATED)
+@limiter.limit("20/minute")
 async def scan_text(
     body: PIIScanTextRequest,
     db: DbSession,
@@ -69,8 +71,9 @@ async def scan_text(
 
 
 @router.post("/scan/file", response_model=PIIScanOut, status_code=status.HTTP_201_CREATED)
+@limiter.limit("10/minute")
 async def scan_file(
-    file: UploadFile,
+    file: Annotated[UploadFile, File()],
     db: DbSession,
     current_user: CurrentUser,
     request: Request,
