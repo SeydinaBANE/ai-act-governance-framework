@@ -98,14 +98,16 @@ async def get_actions_required(db: DbSession, current_user: CurrentUser) -> dict
 
     actions = []
     for assessment in assessments:
-        for action in (assessment.required_actions or []):
-            actions.append({
-                "assessment_id": str(assessment.id),
-                "system_id": str(assessment.ai_system_id),
-                "article": action.get("article"),
-                "obligation": action.get("obligation"),
-                "deadline": action.get("deadline"),
-                "risk_category": assessment.risk_category,
-            })
+        for action in assessment.required_actions or []:
+            actions.append(
+                {
+                    "assessment_id": str(assessment.id),
+                    "system_id": str(assessment.ai_system_id),
+                    "article": action.get("article"),
+                    "obligation": action.get("obligation"),
+                    "deadline": action.get("deadline"),
+                    "risk_category": assessment.risk_category,
+                }
+            )
 
     return {"actions": actions, "total": len(actions)}

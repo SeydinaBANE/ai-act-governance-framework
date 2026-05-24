@@ -107,7 +107,7 @@ async def scan_file_content(
 
     # Chunking pour les gros fichiers (Presidio a une limite de taille)
     chunk_size = 5000
-    chunks = [text[i: i + chunk_size] for i in range(0, len(text), chunk_size)]
+    chunks = [text[i : i + chunk_size] for i in range(0, len(text), chunk_size)]
 
     all_findings: list[dict[str, Any]] = []
     offset = 0

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -114,32 +114,33 @@ export default function ModelCardPage() {
     conformity_measures: "", human_oversight: "", developer_contact: "", dpo_contact: "",
   });
 
-  const { data: cards } = useQuery({
+  const { data: cards } = useQuery<{ items: ModelCard[]; total: number }>({
     queryKey: ["model-cards", id],
     queryFn: () => api.get<{ items: ModelCard[]; total: number }>(`/model-cards/${id}`),
-    onSuccess: (data: { items: ModelCard[]; total: number }) => {
-      if (data.items.length > 0) {
-        const card = data.items[0];
-        setForm({
-          model_name: card.model_name ?? "",
-          model_type: card.model_type ?? "",
-          architecture: card.architecture ?? "",
-          framework: card.framework ?? "",
-          license: card.license ?? "",
-          preprocessing_steps: card.preprocessing_steps ?? "",
-          known_biases: card.known_biases ?? "",
-          evaluation_procedure: card.evaluation_procedure ?? "",
-          limitations: card.limitations ?? "",
-          out_of_scope_uses: card.out_of_scope_uses ?? "",
-          ethical_considerations: card.ethical_considerations ?? "",
-          conformity_measures: card.conformity_measures ?? "",
-          human_oversight: card.human_oversight ?? "",
-          developer_contact: card.developer_contact ?? "",
-          dpo_contact: card.dpo_contact ?? "",
-        });
-      }
-    },
-  } as Parameters<typeof useQuery>[0]);
+  });
+
+  useEffect(() => {
+    if (cards?.items && cards.items.length > 0) {
+      const card = cards.items[0];
+      setForm({
+        model_name: card.model_name ?? "",
+        model_type: card.model_type ?? "",
+        architecture: card.architecture ?? "",
+        framework: card.framework ?? "",
+        license: card.license ?? "",
+        preprocessing_steps: card.preprocessing_steps ?? "",
+        known_biases: card.known_biases ?? "",
+        evaluation_procedure: card.evaluation_procedure ?? "",
+        limitations: card.limitations ?? "",
+        out_of_scope_uses: card.out_of_scope_uses ?? "",
+        ethical_considerations: card.ethical_considerations ?? "",
+        conformity_measures: card.conformity_measures ?? "",
+        human_oversight: card.human_oversight ?? "",
+        developer_contact: card.developer_contact ?? "",
+        dpo_contact: card.dpo_contact ?? "",
+      });
+    }
+  }, [cards]);
 
   const existingCard = cards?.items[0];
 
