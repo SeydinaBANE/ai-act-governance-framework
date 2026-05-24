@@ -39,7 +39,7 @@ def _extract_json(text: str) -> dict[str, Any]:
     match = re.search(r"\{.*\}", text, re.DOTALL)
     if match:
         text = match.group(0)
-    return json.loads(text)  # type: ignore[no-any-return]
+    return json.loads(text)
 
 
 async def generate_sections(

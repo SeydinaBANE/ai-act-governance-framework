@@ -16,7 +16,7 @@ _QUESTIONNAIRE_PATH = Path(__file__).parent.parent / "data" / "questionnaire.jso
 
 def _load_questionnaire() -> dict[str, Any]:
     with _QUESTIONNAIRE_PATH.open() as f:
-        return json.load(f)  # type: ignore[no-any-return]
+        return json.load(f)
 
 
 def _flatten_questions(questionnaire: dict[str, Any]) -> list[dict[str, Any]]:
