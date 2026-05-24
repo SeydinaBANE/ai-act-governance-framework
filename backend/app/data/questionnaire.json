@@ -1,0 +1,202 @@
+{
+  "version": "1.0",
+  "last_updated": "2026-05-24",
+  "sections": [
+    {
+      "id": "s1",
+      "title": "Usage et domaine d'application",
+      "questions": [
+        {
+          "id": "q1_biometric_realtime",
+          "text": "Le système effectue-t-il une identification biométrique en temps réel dans des espaces accessibles au public ?",
+          "type": "boolean",
+          "rule": "prohibited_art5_1b",
+          "weight": 100,
+          "triggers_prohibited": true,
+          "ai_act_ref": "Art. 5(1)(b)"
+        },
+        {
+          "id": "q2_social_scoring",
+          "text": "Le système évalue-t-il ou classe-t-il des personnes physiques sur la base de leur comportement social ou de caractéristiques personnelles (scoring social) ?",
+          "type": "boolean",
+          "rule": "prohibited_art5_1c",
+          "weight": 100,
+          "triggers_prohibited": true,
+          "ai_act_ref": "Art. 5(1)(c)"
+        },
+        {
+          "id": "q3_subliminal",
+          "text": "Le système utilise-t-il des techniques subliminales ou des mécanismes de manipulation psychologique pour influencer le comportement d'une personne à son insu ?",
+          "type": "boolean",
+          "rule": "prohibited_art5_1a",
+          "weight": 100,
+          "triggers_prohibited": true,
+          "ai_act_ref": "Art. 5(1)(a)"
+        },
+        {
+          "id": "q4_emotion_workplace",
+          "text": "Le système inFère-t-il les émotions de personnes physiques sur le lieu de travail ou dans les établissements d'enseignement ?",
+          "type": "boolean",
+          "rule": "prohibited_art5_1f",
+          "weight": 100,
+          "triggers_prohibited": true,
+          "ai_act_ref": "Art. 5(1)(f)"
+        }
+      ]
+    },
+    {
+      "id": "s2",
+      "title": "Domaine d'application (Annexe III)",
+      "questions": [
+        {
+          "id": "q5_critical_infra",
+          "text": "Le système est-il utilisé comme composant de sécurité d'une infrastructure critique (eau, gaz, électricité, transports, internet) ?",
+          "type": "boolean",
+          "rule": "high_risk_annex3_2",
+          "weight": 80,
+          "triggers_high_risk": true,
+          "ai_act_ref": "Annexe III §2"
+        },
+        {
+          "id": "q6_education",
+          "text": "Le système est-il utilisé pour déterminer l'accès à l'enseignement, affecter des étudiants, évaluer des apprenants ou détecter des comportements interdits lors d'examens ?",
+          "type": "boolean",
+          "rule": "high_risk_annex3_3",
+          "weight": 80,
+          "triggers_high_risk": true,
+          "ai_act_ref": "Annexe III §3"
+        },
+        {
+          "id": "q7_employment",
+          "text": "Le système est-il utilisé pour le recrutement, la sélection, la promotion, le licenciement ou l'évaluation des performances des travailleurs ?",
+          "type": "boolean",
+          "rule": "high_risk_annex3_4",
+          "weight": 80,
+          "triggers_high_risk": true,
+          "ai_act_ref": "Annexe III §4"
+        },
+        {
+          "id": "q8_essential_services",
+          "text": "Le système est-il utilisé pour évaluer l'éligibilité à des prestations sociales, des allocations, des services de santé, ou pour évaluer la solvabilité ou le risque crédit ?",
+          "type": "boolean",
+          "rule": "high_risk_annex3_5",
+          "weight": 80,
+          "triggers_high_risk": true,
+          "ai_act_ref": "Annexe III §5"
+        },
+        {
+          "id": "q9_law_enforcement",
+          "text": "Le système est-il utilisé par des autorités répressives pour évaluer un risque criminel, analyser des preuves, ou établir des profils ?",
+          "type": "boolean",
+          "rule": "high_risk_annex3_6",
+          "weight": 80,
+          "triggers_high_risk": true,
+          "ai_act_ref": "Annexe III §6"
+        },
+        {
+          "id": "q10_migration",
+          "text": "Le système est-il utilisé dans le cadre de la gestion des migrations (évaluation des demandes d'asile, contrôle aux frontières, gestion des visas) ?",
+          "type": "boolean",
+          "rule": "high_risk_annex3_7",
+          "weight": 80,
+          "triggers_high_risk": true,
+          "ai_act_ref": "Annexe III §7"
+        },
+        {
+          "id": "q11_justice",
+          "text": "Le système assiste-t-il des tribunaux ou des autorités judiciaires dans des décisions ou la recherche et l'interprétation de faits et de lois ?",
+          "type": "boolean",
+          "rule": "high_risk_annex3_8",
+          "weight": 80,
+          "triggers_high_risk": true,
+          "ai_act_ref": "Annexe III §8"
+        }
+      ]
+    },
+    {
+      "id": "s3",
+      "title": "Autonomie et prise de décision",
+      "questions": [
+        {
+          "id": "q12_autonomous_decision",
+          "text": "Le système prend-il des décisions sans supervision humaine systématique ?",
+          "type": "boolean",
+          "rule": "score_autonomy",
+          "weight": 25
+        },
+        {
+          "id": "q13_irreversible",
+          "text": "Les décisions du système peuvent-elles avoir des conséquences significatives et difficiles à réverser pour des personnes physiques ?",
+          "type": "boolean",
+          "rule": "score_irreversible",
+          "weight": 20
+        },
+        {
+          "id": "q14_explainability",
+          "text": "Le système peut-il expliquer ses décisions à un utilisateur non technique ?",
+          "type": "boolean",
+          "rule": "score_no_explainability",
+          "weight": 15,
+          "inverted": true
+        }
+      ]
+    },
+    {
+      "id": "s4",
+      "title": "Données traitées",
+      "questions": [
+        {
+          "id": "q15_sensitive_data",
+          "text": "Le système traite-t-il des données sensibles (santé, origines ethniques, opinions politiques, données biométriques, données génétiques) ?",
+          "type": "boolean",
+          "rule": "score_sensitive_data",
+          "weight": 20
+        },
+        {
+          "id": "q16_large_scale",
+          "text": "Le système traite-t-il des données à grande échelle (plus de 100 000 personnes) ?",
+          "type": "boolean",
+          "rule": "score_large_scale",
+          "weight": 10
+        },
+        {
+          "id": "q17_minors",
+          "text": "Le système traite-t-il des données concernant des mineurs ?",
+          "type": "boolean",
+          "rule": "score_minors",
+          "weight": 15
+        }
+      ]
+    },
+    {
+      "id": "s5",
+      "title": "Mesures existantes",
+      "questions": [
+        {
+          "id": "q18_risk_management",
+          "text": "Un système de gestion des risques IA est-il en place et documenté pour ce système ?",
+          "type": "boolean",
+          "rule": "score_risk_management",
+          "weight": 10,
+          "inverted": true
+        },
+        {
+          "id": "q19_human_oversight",
+          "text": "Des mesures de supervision humaine permettant de détecter et corriger les erreurs du système sont-elles en place ?",
+          "type": "boolean",
+          "rule": "score_human_oversight",
+          "weight": 10,
+          "inverted": true
+        },
+        {
+          "id": "q20_logging",
+          "text": "Le système dispose-t-il de mécanismes de journalisation permettant la traçabilité des décisions ?",
+          "type": "boolean",
+          "rule": "score_logging",
+          "weight": 5,
+          "inverted": true
+        }
+      ]
+    }
+  ]
+}

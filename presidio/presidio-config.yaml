@@ -1,0 +1,87 @@
+# Recognizers personnalisés pour Presidio (France + EU)
+# Utilisé par le container presidio-analyzer
+
+recognizers:
+  # ---- SIRET (Système d'Identification du Répertoire des Établissements) ----
+  - name: Fr_Siret
+    supported_entity: FR_SIRET
+    type: pattern
+    supported_languages:
+      - fr
+      - en
+    patterns:
+      - name: SIRET_pattern
+        regex: '\b\d{14}\b'
+        score: 0.6
+    context:
+      - siret
+      - établissement
+      - entreprise
+      - siren
+
+  # ---- NIR (Numéro de Sécurité Sociale / INSEE) ----
+  - name: Fr_Nin
+    supported_entity: FR_NIN
+    type: pattern
+    supported_languages:
+      - fr
+    patterns:
+      - name: NIR_pattern
+        regex: '\b[12]\s*\d{2}\s*(0[1-9]|1[0-2])\s*\d{2}\s*\d{3}\s*\d{3}\s*\d{2}\b'
+        score: 0.85
+    context:
+      - sécurité sociale
+      - numéro de sécurité
+      - numéro NIR
+      - INSEE
+      - numéro d'assuré
+
+  # ---- IBAN Français ----
+  - name: Fr_Iban
+    supported_entity: FR_IBAN
+    type: pattern
+    supported_languages:
+      - fr
+      - en
+    patterns:
+      - name: FR_IBAN_pattern
+        regex: '\bFR\d{2}[0-9A-Z]{23}\b'
+        score: 0.9
+      - name: FR_IBAN_spaced_pattern
+        regex: '\bFR\d{2}(\s?[0-9A-Z]{4}){5}\s?[0-9A-Z]{3}\b'
+        score: 0.85
+    context:
+      - iban
+      - compte bancaire
+      - domiciliation
+      - virement
+
+  # ---- Permis de conduire FR ----
+  - name: Fr_DrivingLicense
+    supported_entity: FR_DRIVING_LICENSE
+    type: pattern
+    supported_languages:
+      - fr
+    patterns:
+      - name: DL_pattern
+        regex: '\b\d{2}[A-Z]{2}\d{5}\b'
+        score: 0.7
+    context:
+      - permis
+      - permis de conduire
+      - numéro de permis
+
+  # ---- Passeport Français ----
+  - name: Fr_Passport
+    supported_entity: FR_PASSPORT
+    type: pattern
+    supported_languages:
+      - fr
+    patterns:
+      - name: PASSPORT_pattern
+        regex: '\b\d{2}[A-Z]{2}\d{5}\b'
+        score: 0.65
+    context:
+      - passeport
+      - passport
+      - numéro de passeport
