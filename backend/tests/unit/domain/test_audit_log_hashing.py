@@ -3,30 +3,30 @@ from __future__ import annotations
 import uuid
 from datetime import UTC, datetime
 
+from app.domain.audit_log.hashing import compute_hash, verify_hash
 from app.models.audit_log import AuditLog
-from app.services.audit_logger import _compute_hash, verify_hash
 
 
 def test_compute_hash_deterministic() -> None:
-    h1 = _compute_hash("actor-1", "user.created", "res-1", "2026-01-01T00:00:00", {"key": "val"})
-    h2 = _compute_hash("actor-1", "user.created", "res-1", "2026-01-01T00:00:00", {"key": "val"})
+    h1 = compute_hash("actor-1", "user.created", "res-1", "2026-01-01T00:00:00", {"key": "val"})
+    h2 = compute_hash("actor-1", "user.created", "res-1", "2026-01-01T00:00:00", {"key": "val"})
     assert h1 == h2
 
 
 def test_compute_hash_changes_with_actor() -> None:
-    h1 = _compute_hash("actor-1", "user.created", "res-1", "2026-01-01T00:00:00", None)
-    h2 = _compute_hash("actor-2", "user.created", "res-1", "2026-01-01T00:00:00", None)
+    h1 = compute_hash("actor-1", "user.created", "res-1", "2026-01-01T00:00:00", None)
+    h2 = compute_hash("actor-2", "user.created", "res-1", "2026-01-01T00:00:00", None)
     assert h1 != h2
 
 
 def test_compute_hash_changes_with_payload() -> None:
-    h1 = _compute_hash("actor", "action", "res", "ts", {"key": "val1"})
-    h2 = _compute_hash("actor", "action", "res", "ts", {"key": "val2"})
+    h1 = compute_hash("actor", "action", "res", "ts", {"key": "val1"})
+    h2 = compute_hash("actor", "action", "res", "ts", {"key": "val2"})
     assert h1 != h2
 
 
 def test_compute_hash_is_sha256() -> None:
-    h = _compute_hash("a", "b", "c", "d", None)
+    h = compute_hash("a", "b", "c", "d", None)
     assert len(h) == 64
     assert all(c in "0123456789abcdef" for c in h)  # pragma: allowlist secret
 
@@ -45,7 +45,7 @@ def test_verify_hash_valid() -> None:
     entry.resource_type = "test"
     entry.input_payload = payload
     entry.created_at = ts
-    entry.payload_hash = _compute_hash(
+    entry.payload_hash = compute_hash(
         str(actor_id), "test.action", str(resource_id), ts.isoformat(), payload
     )
 

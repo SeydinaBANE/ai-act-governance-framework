@@ -1,7 +1,7 @@
 from __future__ import annotations
 
+from app.domain.risk_assessment.rules import assess
 from app.models.ai_system import RiskCategory
-from app.services.risk_scorer import assess
 
 
 def test_prohibited_biometric_realtime() -> None:

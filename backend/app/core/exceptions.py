@@ -33,6 +33,19 @@ class UnauthorizedError(AppError):
         )
 
 
+class InvalidCredentialsError(AppError):
+    def __init__(self) -> None:
+        super().__init__(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Email ou mot de passe incorrect",
+        )
+
+
+class AccountDisabledError(AppError):
+    def __init__(self) -> None:
+        super().__init__(status_code=status.HTTP_403_FORBIDDEN, detail="Compte désactivé")
+
+
 class ConflictError(AppError):
     def __init__(self, detail: str) -> None:
         super().__init__(status_code=status.HTTP_409_CONFLICT, detail=detail)
@@ -41,6 +54,11 @@ class ConflictError(AppError):
 class UnprocessableError(AppError):
     def __init__(self, detail: str) -> None:
         super().__init__(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=detail)
+
+
+class ServiceUnavailableError(AppError):
+    def __init__(self, detail: str) -> None:
+        super().__init__(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail=detail)
 
 
 async def http_exception_handler(request: Request, exc: Exception) -> JSONResponse:

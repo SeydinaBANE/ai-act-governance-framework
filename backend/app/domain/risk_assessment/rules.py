@@ -11,7 +11,7 @@ from app.models.ai_system import RiskCategory
 
 log = structlog.get_logger(__name__)
 
-_QUESTIONNAIRE_PATH = Path(__file__).parent.parent / "data" / "questionnaire.json"
+_QUESTIONNAIRE_PATH = Path(__file__).parent.parent.parent / "data" / "questionnaire.json"
 
 
 def _load_questionnaire() -> dict[str, Any]:
